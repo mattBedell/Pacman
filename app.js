@@ -3,6 +3,7 @@ console.log('Script Loaded.');
     constructor() {
      this.element = $('.movSprite');
      this.speed = 20;
+     this.changeSpeed = 20;
      this.origOffset = this.element.offset();
      this.element.css('background-image', 'url(assets/pacStart.png');//Initial background image for sprite
      this.assetLibrary = {
@@ -13,18 +14,33 @@ console.log('Script Loaded.');
      }
      this.runArrowListener();
      this.imgCounter = 0;
-     this.direction = 39;
+     this.axisM = 'x';
      this.position = {
         xP: this.origOffset.left,
         yP: this.origOffset.top
      }
-
    }
    runArrowListener(){
       let that = this;
       $('body').on('keydown', function(e){
-         that.direction = e.keyCode;
-         console.log(that.direction);
+         switch(e.keyCode){
+            case 38://UP
+               that.changeSpeed = that.speed * 1;
+               that.axisM = 'y';
+               break;
+            case 40://DOWN
+               that.changeSpeed = that.speed;
+               that.axisM = 'y';
+               break;
+            case 37://LEFT
+               that.changeSpeed = that.speed * - 1;
+               that.axisM = 'x';
+               break;
+            case 39://RIGHT
+               that.changeSpeed = that.speed;
+               that.axisM = 'x';
+               break;
+         }
       })
    }
    animateMe(direction){
