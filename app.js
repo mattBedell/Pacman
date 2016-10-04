@@ -13,6 +13,7 @@ console.log('Script Loaded.');
         downI: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
      }
      this.runArrowListener();
+     this.runMove();
      this.imgCounter = 0;
      this.axisM = 'x';
      this.position = {
@@ -20,12 +21,28 @@ console.log('Script Loaded.');
         yP: this.origOffset.top
      }
    }
+   runMove() {
+      var that = this;
+      var moveInterval = setInterval(function(){
+         let tempPosition = that.element.offset();
+         switch(that.axisM){
+            case 'x':
+               that.element.offset({top: tempPosition.top, left: tempPosition.left += that.changeSpeed});
+            break;
+
+            case 'y':
+               that.element.offset({top: tempPosition.top += that.changeSpeed, left: tempPosition.left });
+            break;
+         }
+         that.animateMe(that);
+      }, 500);
+   }
    runArrowListener(){
       let that = this;
       $('body').on('keydown', function(e){
          switch(e.keyCode){
             case 38://UP
-               that.changeSpeed = that.speed * 1;
+               that.changeSpeed = that.speed * - 1;
                that.axisM = 'y';
                break;
             case 40://DOWN
@@ -41,31 +58,31 @@ console.log('Script Loaded.');
                that.axisM = 'x';
                break;
          }
+         that.animateMe(that);
       })
    }
-   animateMe(direction){
-      if(this.imgCounter < this.assetLibrary.leftI.length){
-         this.imgCounter++;
-      } else {
-         this.imgCounter = 0;
+   animateMe(objTarget){
+      switch(objTarget.axisM){
+         case 'x':
+            if(objTarget.changeSpeed < 0) {
+               objTarget.element.css('background-image', objTarget.assetLibrary.leftI[objTarget.imgCounter]);
+            } else {
+               objTarget.element.css('background-image', objTarget.assetLibrary.rightI[objTarget.imgCounter]);
+            }
+         break;
+
+         case 'y':
+            if(objTarget.changeSpeed < 0) {
+              objTarget.element.css('background-image', objTarget.assetLibrary.upI[objTarget.imgCounter]);
+            } else {
+              objTarget.element.css('background-image', objTarget.assetLibrary.downI[objTarget.imgCounter]);
+            }
+         break;
       }
-      this.element.css('background-image', this.assetLibrary.upI[0]);
-      switch(direction){
-         case 'up':
-          this.element.css('background-image', this.assetLibrary.upI[this.imgCounter]);
-          break;
-
-         case 'down':
-          this.element.css('background-image', this.assetLibrary.downI[this.imgCounter]);
-          break;
-
-         case 'left':
-          this.element.css('background-image', this.assetLibrary.leftI[this.imgCounter]);
-          break;
-
-         case 'right':
-          this.element.css('background-image', this.assetLibrary.rightI[this.imgCounter]);
-          break;
+      if(objTarget.imgCounter < objTarget.assetLibrary.leftI.length - 1){
+         objTarget.imgCounter++;
+      } else {
+         objTarget.imgCounter = 0;
       }
    }
  }
