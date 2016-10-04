@@ -2,6 +2,7 @@ body{
   background-color: black;
 }
 .movSprite {
+  background-size: 100% 100%;
   width: 50px;
   height: 50px;
 }
