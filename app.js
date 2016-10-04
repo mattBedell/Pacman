@@ -5,6 +5,7 @@ console.log('Script Loaded.');
      this.speed = 20;
      this.origOffset = this.element.offset();
      this.runArrowListener();
+     this.moveCounter;
      this.position = {
         xP: this.origOffset.left,
         yP: this.origOffset.top
@@ -22,7 +23,6 @@ console.log('Script Loaded.');
       }
       this.element.offset({top: this.position.yP, left: this.position.xP});
    }
-
    move(direction){
       switch(direction){
          case 38://UP
@@ -45,6 +45,7 @@ console.log('Script Loaded.');
          that.move(e.keyCode);
       })
    }
+   animateMe
  }
  var newPlayer = new PlayerSprite();
 
