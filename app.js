@@ -35,7 +35,7 @@ console.log('Script Loaded.');
             break;
          }
          that.animateMe(that);
-      }, 500);
+      }, 100);
    }
    runArrowListener(){
       let that = this;
