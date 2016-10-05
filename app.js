@@ -86,7 +86,6 @@ console.log('Script Loaded.');
       }
    }
  }
- var newPlayer = new PlayerSprite();
 
 
 
