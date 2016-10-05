@@ -86,7 +86,18 @@ console.log('Script Loaded.');
       }
    }
  }
+ class CheckCollision {
+    constructor(){
+      this.element = %('.colider');
+      this.origOffset = this.element.offset();
+      this.position = {
+         x: this.origOffset.left,
+         y: this.origOffset.top
+      }
+   }
+}
  var newPlayer = new PlayerSprite();
+ var collideTest = new CheckCollision();
 
 
 
