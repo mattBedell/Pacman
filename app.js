@@ -1,13 +1,12 @@
 console.log("Script Loaded");
 class GridProperties {
-   constructor(element){
+   constructor(myDivElement){
       this.canMove = {
          gLeft: true,
          gRight: true,
          gUp: true,
          gDown: true,
       }
-      this.element = element;
    }
 }
 
@@ -18,6 +17,7 @@ class GridProperties {
      this.grid = {
         row: []
      }
+     this.myEl;
      this.makeGrid();
    }
    makeGrid(){
@@ -33,14 +33,16 @@ class GridProperties {
          for(var j = 0; j < this.gW; j++){
             var rowClass = ' br' + i;
             var colClass = ' bc' + j;
-            var newDiv = '<div class="gameBlock' + rowClass + colClass + '"></div>';
+            var numClass = 'nm' + i + j;
+            var newDiv = '<div class="gameBlock' + rowClass + colClass + ' ' + numClass + '"></div>';
             rowToAppend.append(newDiv);
-            this.grid.row[i][j] = new GridProperties($(newDiv));
+            this.grid.row[i][j] = new GridProperties();
+            this.grid.row[i][j].myEl = $('.' + numClass);
          }
       }
    }
  }
- var gBoard = new MakeBoard(25, 25);
+ var gBoard = new MakeBoard(20, 20);
 
 
 
