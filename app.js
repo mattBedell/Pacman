@@ -34,7 +34,10 @@ console.log('Script Loaded.');
                that.element.offset({top: tempPosition.top += that.changeSpeed, left: tempPosition.left });
             break;
          }
+         that.position.xP = tempPosition.left;
+         that.position.yP = tempPosition.top;
          that.animateMe(that);
+         collideTest.checkHit();
       }, 100);
    }
    runArrowListener(){
@@ -88,11 +91,21 @@ console.log('Script Loaded.');
  }
  class CheckCollision {
     constructor(){
-      this.element = %('.colider');
+      this.element = $('.colider');
       this.origOffset = this.element.offset();
       this.position = {
-         x: this.origOffset.left,
-         y: this.origOffset.top
+         xC: this.origOffset.left,
+         yC: this.origOffset.top
+      }
+   }
+   checkHit(){
+      //Left edge hit detection
+      if(newPlayer.position.xP + newPlayer.element.width() >= collideTest.position.xC && newPlayer.position.yP <= collideTest.position.yC + collideTest.element.height()
+         && newPlayer.position.yP + newPlayer.element.height() >= collideTest.position.yC){
+            console.log("Hit Detected");
+            this.element.css('background-color', 'red');
+      } else {
+            this.element.css('background-color', 'blue');
       }
    }
 }
