@@ -1,9 +1,24 @@
 body{
   background-color: black;
 }
-.movSprite {
-  display: inline-block;
-  background-size: 100% 100%;
-  width: 50px;
-  height: 50px;
+.gameBoard {
+  display:flex;
+}
+.row {
+  display: flex;
+  height: 25px;
+  justify-content: center;
+  align-items: center;
+}
+.gameBlock {
+  box-sizing: border-box;
+  width: 25px;
+  height: 100%;
+  background-color: silver;
+  border: 1px solid gray;
+}
+.testDiv {
+  height: 25px;
+  width: 150px;
+  background-color: white;
 }
