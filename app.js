@@ -20,7 +20,7 @@ class MakeBounds {
    outerBounds(){
       var nextRow = 0;
       var nextCol = 0;
-      for(var i = 0; i < gBoard.grid.row.length; i++) {
+      for(let i = 0; i < gBoard.grid.row.length; i++) {
          if(nextCol < gBoard.grid.row[0].length) {
             //Top Border
             gBoard.grid.row[0][nextCol].canMove.gUp = false;
@@ -55,6 +55,23 @@ class MakeBounds {
       if(!coord.canMove.gDown){
          coord.myEl.css('border-bottom', borderType);
       }
+   }
+   drawWalls(start, end, index, direction){
+      switch(direction){
+         case 'row':
+            for(let i = start; i < end; i++){
+               gBoard.grid.row[i][index].canMove.gRight = false;
+               gBoard.grid.row[i][index + 1].canMove.gLeft = false;
+               this.giveBoundsBorder(gBoard.grid.row[i][index], this.borderType);
+            }
+         break;
+         case 'col':
+            for(let i = start; i < end; i++){
+               gBoard.grid.row[index + 1][i].canMove.gUp = false;
+               gBoard.grid.row[index][i].canMove.gDown = false;
+               this.giveBoundsBorder(gBoard.grid.row[index][i], this.borderType);
+            }
+         }
    }
 }
 class MakeBoard {
@@ -100,9 +117,6 @@ class SprChar {
 }
 class RedrawBoard {
    constructor(){
-      //this.playerDir = 'pRight';
-      //this.startPosition = gBoard.grid.row[0][0];
-      //this.currPos = this.startPosition;
       this.pacMan = new SprChar();
       this.runArrowListener(this.pacMan);
    }
@@ -133,7 +147,7 @@ class RedrawBoard {
       })
    }
    updateGrid(sTarg){
-      var oldColor = sTarg.sprite.myEl.css('background-color');
+      let oldColor = sTarg.sprite.myEl.css('background-color');
 
       switch(sTarg.myDir){
          case 'pRight':
