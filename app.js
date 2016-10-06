@@ -92,74 +92,89 @@ class MakeBoard {
       }
    }
  }
+class SprChar {
+   constructor(){
+      this.sprite = gBoard.grid.row[0][0];
+      this.myDir = 'pRight';
+    }
+}
 class RedrawBoard {
    constructor(){
-      this.playerDir = 'pRight';
-      this.startPosition = gBoard.grid.row[0][0];
-      this.currPos = this.startPosition;
-      this.runArrowListener();
+      //this.playerDir = 'pRight';
+      //this.startPosition = gBoard.grid.row[0][0];
+      //this.currPos = this.startPosition;
+      this.pacMan = new SprChar();
+      this.runArrowListener(this.pacMan);
    }
-   runArrowListener(){
-      let that = this;
+   runArrowListener(pCharacterSprite){
       $('body').on('keydown', function(e){
          switch(e.keyCode){
             case 38://UP
-               that.playerDir = 'pUp';
+               if(pCharacterSprite.sprite.canMove.gUp){
+                  pCharacterSprite.myDir = 'pUp';
+               }
                break;
             case 40://DOWN
-               that.playerDir = 'pDown';
+               if(pCharacterSprite.sprite.canMove.gDown){
+                  pCharacterSprite.myDir = 'pDown';
+               }
                break;
             case 37://LEFT
-               that.playerDir = 'pLeft';
+               if(pCharacterSprite.sprite.canMove.gLeft){
+                  pCharacterSprite.myDir = 'pLeft';
+               }
                break;
             case 39://RIGHT
-               that.playerDir = 'pRight';
+               if(pCharacterSprite.sprite.canMove.gRight){
+                  pCharacterSprite.myDir = 'pRight';
+               }
                break;
          }
       })
    }
-   playerGrid(pDirection){
-      var oldColor = this.currPos.myEl.css('background-color');
-      switch(pDirection){
+   updateGrid(sTarg){
+      var oldColor = sTarg.sprite.myEl.css('background-color');
+
+      switch(sTarg.myDir){
          case 'pRight':
-            this.currPos.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[this.currPos.myRow][this.currPos.myCol - 1].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-color', oldColor);
             break;
          case 'pLeft':
-            this.currPos.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[this.currPos.myRow][this.currPos.myCol + 1].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-color', oldColor);
             break;
          case 'pDown':
-            this.currPos.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[this.currPos.myRow - 1][this.currPos.myCol].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-color', oldColor);
             break;
          case 'pUp':
-            this.currPos.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[this.currPos.myRow + 1][this.currPos.myCol].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-color', oldColor);
             break;
       }
    }
-    checkMove(){
+    checkMove(spriteTarget){
        //Check RIGHT
-       if(this.playerDir === 'pRight' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gRight === true){
-          this.currPos = gBoard.grid.row[this.currPos.myRow][this.currPos.myCol + 1];
-          this.playerGrid('pRight');
+       if(spriteTarget.myDir === 'pRight' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gRight === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol + 1];
+          this.updateGrid(spriteTarget);
        }
        //Check LEFT
-       if(this.playerDir === 'pLeft' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gLeft === true){
-          this.currPos = gBoard.grid.row[this.currPos.myRow][this.currPos.myCol - 1];
-          this.playerGrid('pLeft');
+       if(spriteTarget.myDir === 'pLeft' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gLeft === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol - 1];
+          this.updateGrid(spriteTarget);
        }
        //Check DOWN
-       if(this.playerDir === 'pDown' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gDown === true){
-          this.currPos = gBoard.grid.row[this.currPos.myRow + 1][this.currPos.myCol];
-          this.playerGrid('pDown');
+       if(spriteTarget.myDir === 'pDown' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gDown === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow + 1][spriteTarget.sprite.myCol];
+          this.updateGrid(spriteTarget);
        }
 
-       //Check
-       if(this.playerDir === 'pUp' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gUp === true){
-          this.currPos = gBoard.grid.row[this.currPos.myRow - 1][this.currPos.myCol];
-          this.playerGrid('pUp');
+       //Check UP
+       if(spriteTarget.myDir === 'pUp' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gUp === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow - 1][spriteTarget.sprite.myCol];
+          this.updateGrid(spriteTarget);
        }
     }
 }
@@ -172,7 +187,7 @@ var boundMaker = new MakeBounds('1px solid blue');
 var bRedraw = new RedrawBoard();
 
 setInterval(function(){
-   bRedraw.checkMove();
+   bRedraw.checkMove(bRedraw.pacMan);
 }, 100);
 
 
