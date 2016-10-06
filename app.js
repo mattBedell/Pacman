@@ -24,23 +24,19 @@ class MakeBounds {
          if(nextCol < gBoard.grid.row[0].length) {
             //Top Border
             gBoard.grid.row[0][nextCol].canMove.gUp = false;
-            gBoard.grid.row[0][nextCol].myEl.css('background-color', 'red');
             this.giveBoundsBorder(gBoard.grid.row[0][nextCol], this.borderType)
 
             //Bottom Border
             gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].canMove.gDown = false;
-            gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].myEl.css('background-color', 'red');
             this.giveBoundsBorder(gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol], this.borderType)
             nextCol++;
 
             //Left Border
             gBoard.grid.row[nextRow][0].canMove.gLeft = false;
-            gBoard.grid.row[nextRow][0].myEl.css('background-color', 'red');
             this.giveBoundsBorder(gBoard.grid.row[nextRow][0], this.borderType);
 
             //Right Border
             gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].canMove.gRight = false;
-            gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].myEl.css('background-color', 'red');
             this.giveBoundsBorder(gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1], this.borderType);
          }
          nextRow++;
@@ -101,7 +97,6 @@ class RedrawBoard {
       this.playerDir = 'pRight';
       this.startPosition = gBoard.grid.row[0][0];
       this.currPos = this.startPosition;
-      //this.coordRow =
       this.runArrowListener();
    }
    runArrowListener(){
@@ -130,6 +125,18 @@ class RedrawBoard {
             this.currPos.myEl.css('background-color', 'yellow');
             gBoard.grid.row[this.currPos.myRow][this.currPos.myCol - 1].myEl.css('background-color', oldColor);
             break;
+         case 'pLeft':
+            this.currPos.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[this.currPos.myRow][this.currPos.myCol + 1].myEl.css('background-color', oldColor);
+            break;
+         case 'pDown':
+            this.currPos.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[this.currPos.myRow - 1][this.currPos.myCol].myEl.css('background-color', oldColor);
+            break;
+         case 'pUp':
+            this.currPos.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[this.currPos.myRow + 1][this.currPos.myCol].myEl.css('background-color', oldColor);
+            break;
       }
    }
     checkMove(){
@@ -137,6 +144,22 @@ class RedrawBoard {
        if(this.playerDir === 'pRight' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gRight === true){
           this.currPos = gBoard.grid.row[this.currPos.myRow][this.currPos.myCol + 1];
           this.playerGrid('pRight');
+       }
+       //Check LEFT
+       if(this.playerDir === 'pLeft' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gLeft === true){
+          this.currPos = gBoard.grid.row[this.currPos.myRow][this.currPos.myCol - 1];
+          this.playerGrid('pLeft');
+       }
+       //Check DOWN
+       if(this.playerDir === 'pDown' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gDown === true){
+          this.currPos = gBoard.grid.row[this.currPos.myRow + 1][this.currPos.myCol];
+          this.playerGrid('pDown');
+       }
+
+       //Check
+       if(this.playerDir === 'pUp' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gUp === true){
+          this.currPos = gBoard.grid.row[this.currPos.myRow - 1][this.currPos.myCol];
+          this.playerGrid('pUp');
        }
     }
 }
