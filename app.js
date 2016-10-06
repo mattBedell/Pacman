@@ -44,25 +44,73 @@ class MakeBoard {
    }
  }
 class MakeBounds {
-   constructor() {
-      this.outerBounds  = {
-         top: '',
-         right: '',
-         bottom: '',
-         left: ''
-      }
+   constructor(borderType) {
+      this.borderType = borderType;
+      // this.outerBounds  = {
+      //    top: '',
+      //    right: '',
+      //    bottom: '',
+      //    left: ''
+      // }
    }
-   getBounds(){
+   outerBounds(){
       var nextRow = 0;
       var nextCol = 0;
-      for(var i = 0; i < gBoard.grid.row[0].length; i++) {
-         if(nextCol < gBoard.grid.row.length) {
+      for(var i = 0; i < gBoard.grid.row.length; i++) {
+         if(nextCol < gBoard.grid.row[0].length) {
+            //Top Border
             gBoard.grid.row[0][nextCol].canMove.gUp = false;
             gBoard.grid.row[0][nextCol].myEl.css('background-color', 'red');
+            this.giveBoundsBorder(gBoard.grid.row[0][nextCol], this.borderType)
+
+            //Bottom Border
+            gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].canMove.gDown = false;
+            gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].myEl.css('background-color', 'red');
+            this.giveBoundsBorder(gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol], this.borderType)
             nextCol++;
+
+            //Left Border
+            gBoard.grid.row[nextRow][0].canMove.gLeft = false;
+            gBoard.grid.row[nextRow][0].myEl.css('background-color', 'red');
+            this.giveBoundsBorder(gBoard.grid.row[nextRow][0], this.borderType);
+
+            //Right Border
+            gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].canMove.gRight = false;
+            gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].myEl.css('background-color', 'red');
+            this.giveBoundsBorder(gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1], this.borderType);
          }
+         nextRow++;
+      }
+   }
+   giveBoundsBorder(coord, borderType){
+      if(!coord.canMove.gLeft){
+         coord.myEl.css('border-left', borderType);
+      }
+      if(!coord.canMove.gRight){
+         coord.myEl.css('border-right', borderType);
+      }
+      if(!coord.canMove.gUp){
+         coord.myEl.css('border-top', borderType);
+      }
+      if(!coord.canMove.gDown){
+         coord.myEl.css('border-bottom', borderType);
       }
    }
 }
-var bounds = new MakeBounds();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var bounds = new MakeBounds('1px solid blue');
 var gBoard = new MakeBoard(20, 20);
