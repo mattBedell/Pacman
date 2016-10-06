@@ -10,48 +10,10 @@ class GridProperties {
       this.myEl;
    }
 }
-class MakeBoard {
-   constructor(numberOfRows, numberOfColumns){
-     this.gW = numberOfColumns;
-     this.gH = numberOfRows;
-     this.grid = {
-        row: []
-     }
-     this.makeGrid();
-   }
-   makeGrid(){
-      var divCounter = 0;
-      for(var i = 0; i < this.gH; i++){
-         var giveRowClass = 'row rowNum' + i;
-         var newRow = '<div class="' + giveRowClass + '"></div>';
-         $('body').append(newRow);
-         var myRow = '.rowNum' + i;
-         var rowToAppend = $(myRow);
-         var colN = [];
-         this.grid.row[i] = colN;
-
-         for(var j = 0; j < this.gW; j++){
-            var rowClass = ' br' + i;
-            var colClass = ' bc' + j;
-            var numClass = 'nm' + divCounter;
-            var newDiv = '<div class="gameBlock' + rowClass + colClass + ' ' + numClass + '"></div>';
-            rowToAppend.append(newDiv);
-            this.grid.row[i][j] = new GridProperties();
-            this.grid.row[i][j].myEl = $('.' + numClass);
-            divCounter++;
-         }
-      }
-   }
- }
 class MakeBounds {
    constructor(borderType) {
       this.borderType = borderType;
-      // this.outerBounds  = {
-      //    top: '',
-      //    right: '',
-      //    bottom: '',
-      //    left: ''
-      // }
+      this.outerBounds();
    }
    outerBounds(){
       var nextRow = 0;
@@ -97,6 +59,42 @@ class MakeBounds {
       }
    }
 }
+class MakeBoard {
+   constructor(numberOfRows, numberOfColumns){
+     this.gW = numberOfColumns;
+     this.gH = numberOfRows;
+     this.grid = {
+        row: []
+     }
+     this.makeGrid();
+   }
+   makeGrid(){
+      var divCounter = 0;
+      for(var i = 0; i < this.gH; i++){
+         var giveRowClass = 'row rowNum' + i;
+         var newRow = '<div class="' + giveRowClass + '"></div>';
+         $('body').append(newRow);
+         var myRow = '.rowNum' + i;
+         var rowToAppend = $(myRow);
+         var colN = [];
+         this.grid.row[i] = colN;
+
+         for(var j = 0; j < this.gW; j++){
+            var rowClass = ' br' + i;
+            var colClass = ' bc' + j;
+            var numClass = 'nm' + divCounter;
+            var newDiv = '<div class="gameBlock' + rowClass + colClass + ' ' + numClass + '"></div>';
+            rowToAppend.append(newDiv);
+            this.grid.row[i][j] = new GridProperties();
+            this.grid.row[i][j].myEl = $('.' + numClass);
+            divCounter++;
+         }
+      }
+   }
+ }
+class RedrawBoard {
+   this.playerDir;
+}
 
 
 
@@ -110,7 +108,5 @@ class MakeBounds {
 
 
 
-
-
-var bounds = new MakeBounds('1px solid blue');
 var gBoard = new MakeBoard(20, 20);
+var boundMaker = new MakeBounds('1px solid blue');
