@@ -113,6 +113,25 @@ class SprChar {
    constructor(){
       this.sprite = gBoard.grid.row[0][0];
       this.myDir = 'pRight';
+      this.animateCounter = {
+         aCounter: 0,
+         count: function(myAssets){
+            if(this.aCounter < myAssets.length - 1){
+               this.aCounter++;
+            }else{
+               this.aCounter = 0;
+            }
+            return myAssets[this.aCounter];
+         }
+      }
+      this.assetList  = {
+         pacList: {
+            rightI: ['url(assets/pacStart.png)', 'url(assets/pacRight2.png)', 'url(assets/pacRight3.png)'],
+            leftI: ['url(assets/pacStart.png)', 'url(assets/pacLeft2.png)', 'url(assets/pacLeft3.png)'],
+            upI: ['url(assets/pacStart.png)', 'url(assets/pacUp2.png)', 'url(assets/pacUp3.png)'],
+            downI: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
+         }
+      }
     }
 }
 class RedrawBoard {
@@ -147,24 +166,27 @@ class RedrawBoard {
       })
    }
    updateGrid(sTarg){
-      let oldColor = sTarg.sprite.myEl.css('background-color');
 
       switch(sTarg.myDir){
          case 'pRight':
-            sTarg.sprite.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.rightI));
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-image', '');
             break;
          case 'pLeft':
-            sTarg.sprite.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.leftI));
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-image', '');
             break;
          case 'pDown':
-            sTarg.sprite.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.downI));
+            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-image', '');
             break;
          case 'pUp':
-            sTarg.sprite.myEl.css('background-color', 'yellow');
-            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-color', oldColor);
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.upI));
+            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-image', '');
             break;
       }
    }

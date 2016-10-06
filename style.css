@@ -14,5 +14,6 @@ body{
   box-sizing: border-box;
   width: 25px;
   height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.05);;
+  /*border: 1px solid rgba(255, 255, 255, 0.05);*/
+  background-size: 100% 100%;
 }
