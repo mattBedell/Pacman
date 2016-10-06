@@ -8,6 +8,8 @@ class GridProperties {
          gDown: true,
       }
       this.myEl;
+      this.myRow;
+      this.myCol;
    }
 }
 class MakeBounds {
@@ -87,26 +89,76 @@ class MakeBoard {
             rowToAppend.append(newDiv);
             this.grid.row[i][j] = new GridProperties();
             this.grid.row[i][j].myEl = $('.' + numClass);
+            this.grid.row[i][j].myRow = i;
+            this.grid.row[i][j].myCol = j;
             divCounter++;
          }
       }
    }
  }
 class RedrawBoard {
-   this.playerDir;
+   constructor(){
+      this.playerDir = 'pRight';
+      this.startPosition = gBoard.grid.row[0][0];
+      this.currPos = this.startPosition;
+      //this.coordRow =
+      this.runArrowListener();
+   }
+   runArrowListener(){
+      let that = this;
+      $('body').on('keydown', function(e){
+         switch(e.keyCode){
+            case 38://UP
+               that.playerDir = 'pUp';
+               break;
+            case 40://DOWN
+               that.playerDir = 'pDown';
+               break;
+            case 37://LEFT
+               that.playerDir = 'pLeft';
+               break;
+            case 39://RIGHT
+               that.playerDir = 'pRight';
+               break;
+         }
+      })
+   }
+   playerGrid(pDirection){
+      var oldColor = this.currPos.myEl.css('background-color');
+      switch(pDirection){
+         case 'pRight':
+            this.currPos.myEl.css('background-color', 'yellow');
+            gBoard.grid.row[this.currPos.myRow][this.currPos.myCol - 1].myEl.css('background-color', oldColor);
+            break;
+      }
+   }
+    checkMove(){
+       //Check RIGHT
+       if(this.playerDir === 'pRight' && gBoard.grid.row[this.currPos.myRow][this.currPos.myCol].canMove.gRight === true){
+          this.currPos = gBoard.grid.row[this.currPos.myRow][this.currPos.myCol + 1];
+          this.playerGrid('pRight');
+       }
+    }
 }
-
-
-
-
-
-
-
-
-
 
 
 
 
 var gBoard = new MakeBoard(20, 20);
 var boundMaker = new MakeBounds('1px solid blue');
+var bRedraw = new RedrawBoard();
+
+setInterval(function(){
+   bRedraw.checkMove();
+}, 100);
+
+
+
+
+
+
+
+
+
+
+//
