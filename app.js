@@ -10,6 +10,7 @@ class GridProperties {
       this.myEl;
       this.myRow;
       this.myCol;
+      this.hasDot = true;
    }
 }
 class MakeBounds {
@@ -110,18 +111,36 @@ class MakeBoard {
    }
  }
 class SprChar {
-   constructor(){
+   constructor(sType){
       this.sprite = gBoard.grid.row[0][0];
       this.myDir = 'pRight';
       this.animateCounter = {
+         animList: [],
          aCounter: 0,
-         count: function(myAssets){
-            if(this.aCounter < myAssets.length - 1){
+         count: function(myTarget){
+            if(this.aCounter < myTarget.animateCounter.animList.rightI.length - 1){
+               this.aCounter++;
+               console.log(this.aCounter);
+               switch(myTarget.myDir){
+                  case 'pRight':
+                     return this.animList.rightI[this.aCounter]
+                     break;
+                  case 'pLeft':
+                     return this.animList.leftI[this.aCounter]
+                     break;
+                  case 'pUp':
+                     return this.animList.upI[this.aCounter]
+                     break;
+                  case 'pDown':
+                     return this.animList.downI[this.aCounter]
+                     break;
+               }
+               console.log('this ran');
                this.aCounter++;
             }else{
                this.aCounter = 0;
+               return this.animList.downI[this.aCounter]
             }
-            return myAssets[this.aCounter];
          }
       }
       this.assetList  = {
@@ -132,11 +151,27 @@ class SprChar {
             downI: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
          }
       }
+      this.ghostList = {//ADD GHOST IMAGES HERE
+         rightI: [],
+         leftI: [],
+         upI: [],
+         downI: []
+      }
+      this.spriteType(sType);
     }
+    spriteType(sType){
+      switch(sType){
+         case 'pacman':
+            this.animateCounter.animList = this.assetList.pacList;
+
+         case 'ghost':
+            this.assetList = this.assetList.ghostList;
+      }
+   }
 }
 class RedrawBoard {
    constructor(){
-      this.pacMan = new SprChar();
+      this.pacMan = new SprChar('pacman');
       this.runArrowListener(this.pacMan);
    }
    runArrowListener(pCharacterSprite){
@@ -166,25 +201,24 @@ class RedrawBoard {
       })
    }
    updateGrid(sTarg){
-
       switch(sTarg.myDir){
          case 'pRight':
-            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.rightI));
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
             gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-color', 'black');
             gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-image', '');
             break;
          case 'pLeft':
-            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.leftI));
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
             gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-color', 'black');
             gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-image', '');
             break;
          case 'pDown':
-            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.downI));
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
             gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
             gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-image', '');
             break;
          case 'pUp':
-            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg.assetList.pacList.upI));
+            sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
             gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
             gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-image', '');
             break;
