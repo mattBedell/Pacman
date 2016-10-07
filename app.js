@@ -12,6 +12,15 @@ class GridProperties {
       this.myCol;
       this.hasDot = true;
    }
+   eatDot(){
+      console.log('eat');
+      this.hasDot = false;
+      $(this.myEl).children().removeClass('dot');
+   }
+   giveDot(){
+      this.hasDot = false;
+      $(this.myEl).children().addClass('dot');
+   }
 }
 class MakeBounds {
    constructor(borderType) {
@@ -101,6 +110,7 @@ class MakeBoard {
             var numClass = 'nm' + divCounter;
             var newDiv = '<div class="gameBlock' + rowClass + colClass + ' ' + numClass + '"></div>';
             rowToAppend.append(newDiv);
+            $('.' + numClass).append('<div class="dot"></div>');
             this.grid.row[i][j] = new GridProperties();
             this.grid.row[i][j].myEl = $('.' + numClass);
             this.grid.row[i][j].myRow = i;
@@ -120,7 +130,6 @@ class SprChar {
          count: function(myTarget){
             if(this.aCounter < myTarget.animateCounter.animList.rightI.length - 1){
                this.aCounter++;
-               console.log(this.aCounter);
                switch(myTarget.myDir){
                   case 'pRight':
                      return this.animList.rightI[this.aCounter]
@@ -228,22 +237,26 @@ class RedrawBoard {
        //Check RIGHT
        if(spriteTarget.myDir === 'pRight' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gRight === true){
           spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol + 1];
+          spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
        //Check LEFT
        if(spriteTarget.myDir === 'pLeft' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gLeft === true){
           spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol - 1];
+          spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
        //Check DOWN
        if(spriteTarget.myDir === 'pDown' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gDown === true){
           spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow + 1][spriteTarget.sprite.myCol];
+          spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
 
        //Check UP
        if(spriteTarget.myDir === 'pUp' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gUp === true){
           spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow - 1][spriteTarget.sprite.myCol];
+          spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
     }
