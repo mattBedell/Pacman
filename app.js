@@ -13,12 +13,11 @@ class GridProperties {
       this.hasDot = true;
    }
    eatDot(){
-      console.log('eat');
       this.hasDot = false;
       $(this.myEl).children().removeClass('dot');
    }
    giveDot(){
-      this.hasDot = false;
+      this.hasDot = true;
       $(this.myEl).children().addClass('dot');
    }
 }
@@ -121,9 +120,11 @@ class MakeBoard {
    }
  }
 class SprChar {
-   constructor(sType){
-      this.sprite = gBoard.grid.row[0][0];
+   constructor(sType, startPosition){
+      this.sprite = startPosition;
       this.myDir = 'pRight';
+      this.rowPos = startPosition.myRow;
+      this.colPos = startPosition.myCol;
       this.animateCounter = {
          animList: [],
          aCounter: 0,
@@ -180,7 +181,8 @@ class SprChar {
 }
 class RedrawBoard {
    constructor(){
-      this.pacMan = new SprChar('pacman');
+      this.pacMan = new SprChar('pacman', gBoard.grid.row[0][0]);
+      //this.ghost1 = new SprChar('ghost' , gBoard.grid.row[5][20]);
       this.runArrowListener(this.pacMan);
    }
    runArrowListener(pCharacterSprite){
@@ -210,45 +212,47 @@ class RedrawBoard {
       })
    }
    updateGrid(sTarg){
+      sTarg.colPos = sTarg.sprite.myCol;
+      sTarg.rowPos = sTarg.sprite.myRow;
       switch(sTarg.myDir){
          case 'pRight':
             sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-color', 'black');
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol - 1].myEl.css('background-image', '');
+            gBoard.grid.row[sTarg.rowPos][sTarg.colPos - 1].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.rowPos][sTarg.colPos - 1].myEl.css('background-image', '');
             break;
          case 'pLeft':
             sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-color', 'black');
-            gBoard.grid.row[sTarg.sprite.myRow][sTarg.sprite.myCol + 1].myEl.css('background-image', '');
+            gBoard.grid.row[sTarg.rowPos][sTarg.colPos + 1].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.rowPos][sTarg.colPos + 1].myEl.css('background-image', '');
             break;
          case 'pDown':
             sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
-            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
-            gBoard.grid.row[sTarg.sprite.myRow - 1][sTarg.sprite.myCol].myEl.css('background-image', '');
+            gBoard.grid.row[sTarg.rowPos - 1][sTarg.colPos].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.rowPos - 1][sTarg.colPos].myEl.css('background-image', '');
             break;
          case 'pUp':
             sTarg.sprite.myEl.css('background-image', sTarg.animateCounter.count(sTarg));
-            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-color', 'black');
-            gBoard.grid.row[sTarg.sprite.myRow + 1][sTarg.sprite.myCol].myEl.css('background-image', '');
+            gBoard.grid.row[sTarg.rowPos + 1][sTarg.colPos].myEl.css('background-color', 'black');
+            gBoard.grid.row[sTarg.rowPos + 1][sTarg.colPos].myEl.css('background-image', '');
             break;
       }
    }
     checkMove(spriteTarget){
        //Check RIGHT
-       if(spriteTarget.myDir === 'pRight' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gRight === true){
-          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol + 1];
+       if(spriteTarget.myDir === 'pRight' && gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos].canMove.gRight === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos + 1];
           spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
        //Check LEFT
-       if(spriteTarget.myDir === 'pLeft' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gLeft === true){
-          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol - 1];
+       if(spriteTarget.myDir === 'pLeft' && gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos].canMove.gLeft === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos - 1];
           spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
        //Check DOWN
-       if(spriteTarget.myDir === 'pDown' && gBoard.grid.row[spriteTarget.sprite.myRow][spriteTarget.sprite.myCol].canMove.gDown === true){
-          spriteTarget.sprite = gBoard.grid.row[spriteTarget.sprite.myRow + 1][spriteTarget.sprite.myCol];
+       if(spriteTarget.myDir === 'pDown' && gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos].canMove.gDown === true){
+          spriteTarget.sprite = gBoard.grid.row[spriteTarget.rowPos + 1][spriteTarget.colPos];
           spriteTarget.sprite.eatDot();
           this.updateGrid(spriteTarget);
        }
@@ -261,25 +265,20 @@ class RedrawBoard {
        }
     }
 }
-
+class Governer{
+   constructor(){
+      this.playerScore;
+      this.playerLives;
+      this.playerPosition;
+   }
+}
 
 
 
 var gBoard = new MakeBoard(20, 20);
 var boundMaker = new MakeBounds('1px solid blue');
 var bRedraw = new RedrawBoard();
-
 setInterval(function(){
    bRedraw.checkMove(bRedraw.pacMan);
 }, 100);
-
-
-
-
-
-
-
-
-
-
 //
