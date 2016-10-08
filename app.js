@@ -72,7 +72,34 @@ class GameBoard {
     }
   }
 }
-var board = new GameBoard(20, 10, '1px solid blue');
+
+class Sprite {
+  constructor(spriteType, startingRow, startingColumn, startingDirection, directionInput, gBoard) {
+    this.row = startingRow;
+    this.column = startingColumn;
+    this.direction = startingDirection;
+    this.readBoard = gBoard;
+    this.assets = {
+      counter: 0,
+      current: undefined,
+      list: undefined,
+    }
+    switch(spriteType) {
+      case 'pacman':
+        this.assets.list = {
+          right: ['url(assets/pacStart.png)', 'url(assets/pacRight2.png)', 'url(assets/pacRight3.png)'],
+          left: ['url(assets/pacStart.png)', 'url(assets/pacLeft2.png)', 'url(assets/pacLeft3.png)'],
+          up: ['url(assets/pacStart.png)', 'url(assets/pacUp2.png)', 'url(assets/pacUp3.png)'],
+          down: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
+        }
+        break;
+      case 'ghostRed':
+        this.assets.list = 'url(assets/ghostRed.png)';
+        break;
+    }
+  }
+}
+var board = new GameBoard(20, 20, '1px solid blue');
 
 
 
