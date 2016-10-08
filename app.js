@@ -1,15 +1,15 @@
 console.log("Script Loaded");
 class GridProperties {
-   constructor(myDivElement){
+   constructor(myDivElement, i, j){
       this.canMove = {
          gLeft: true,
          gRight: true,
          gUp: true,
          gDown: true,
       }
-      this.myEl;
-      this.myRow;
-      this.myCol;
+      this.myEl = myDivElement;
+      this.myRow = i;
+      this.myCol = j ;
       this.hasDot = true;
    }
    eatDot(){
@@ -21,7 +21,7 @@ class GridProperties {
       $(this.myEl).children().addClass('dot');
    }
 }
-class MakeBounds {
+class BoardSetup {
    constructor(borderType) {
       this.borderType = borderType;
       this.outerBounds();
@@ -109,11 +109,12 @@ class MakeBoard {
             var numClass = 'nm' + divCounter;
             var newDiv = '<div class="gameBlock' + rowClass + colClass + ' ' + numClass + '"></div>';
             rowToAppend.append(newDiv);
-            $('.' + numClass).append('<div class="dot"></div>');
-            this.grid.row[i][j] = new GridProperties();
-            this.grid.row[i][j].myEl = $('.' + numClass);
-            this.grid.row[i][j].myRow = i;
-            this.grid.row[i][j].myCol = j;
+            var $soemthing = $('.' + numClass);
+            $soemthing.append('<div class="dot"></div>');
+            this.grid.row[i][j] = new GridProperties( $soemthing, i, j  );
+            // this.grid.row[i][j].myEl = $soemthing;
+            // this.grid.row[i][j].myRow = i;
+            // this.grid.row[i][j].myCol = j;
             divCounter++;
          }
       }
@@ -180,10 +181,10 @@ class SprChar {
    }
 }
 class RedrawBoard {
-   constructor(){
-      this.pacMan = new SprChar('pacman', gBoard.grid.row[0][0]);
+   constructor(pm){
+      this.pacMan = pm
       //this.ghost1 = new SprChar('ghost' , gBoard.grid.row[5][20]);
-      this.runArrowListener(this.pacMan);
+      this.runArrowListener(pm);
    }
    runArrowListener(pCharacterSprite){
       $('body').on('keydown', function(e){
@@ -237,7 +238,7 @@ class RedrawBoard {
             break;
       }
    }
-    checkMove(spriteTarget){
+   checkMove(spriteTarget){
        //Check RIGHT
        if(spriteTarget.myDir === 'pRight' && gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos].canMove.gRight === true){
           spriteTarget.sprite = gBoard.grid.row[spriteTarget.rowPos][spriteTarget.colPos + 1];
@@ -275,9 +276,10 @@ class Governer{
 
 
 
-var gBoard = new MakeBoard(20, 20);
-var boundMaker = new MakeBounds('1px solid blue');
-var bRedraw = new RedrawBoard();
+var gBoard = new MakeBoard(21, 21);
+var boundMaker = new BoardSetup('1px solid blue');
+var pacMan = new SprChar('pacman', gBoard.grid.row[0][0]);
+var bRedraw = new RedrawBoard(pacMan);
 setInterval(function(){
    bRedraw.checkMove(bRedraw.pacMan);
 }, 100);
