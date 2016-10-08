@@ -1,28 +1,5 @@
- console.log("Script Loaded");
-// class GridProperties {
-//    constructor(myDivElement, i, j){
-//       this.canMove = {
-//          gLeft: true,
-//          gRight: true,
-//          gUp: true,
-//          gDown: true,
-//       }
-//       this.myEl = myDivElement;
-//       this.myRow = i;
-//       this.myCol = j ;
-//       this.hasDot = true;
-//    }
-//    eatDot(){
-//       this.hasDot = false;
-//       $(this.myEl).children().removeClass('dot');
-//    }
-//    giveDot(){
-//       this.hasDot = true;
-//       $(this.myEl).children().addClass('dot');
-//    }
-// }
 class GridProperties {
-  constructor(gridRow, gridColumn, totalId){
+  constructor(gridRow, gridColumn, totalId) {
     this.canMove = {
       up: true,
       down: true,
@@ -36,7 +13,7 @@ class GridProperties {
     this.hasDot = true;
     this.addElmnts();
   }
-  addElmnts(){
+  addElmnts() {
     let appendToThisRowElmntClass = '.r' + this.row;
     let defaultGridClass = 'gridBlock';
     let gridIdNumClass = 'gb' + this.gridId;
@@ -46,7 +23,7 @@ class GridProperties {
 
     let setJqueryElmntPointerClass = '.' + gridIdNumClass;
     this.elmnt = $(setJqueryElmntPointerClass);
-    this.addDot;
+    this.addDot();
   }
   addDot() {
     this.hadDot = true;
@@ -59,6 +36,43 @@ class GridProperties {
     $(this.elmnt).children().removeClass('dot');
   }
 }
+class GameBoard {
+  constructor(numRows, numColumns, borderStyle) {
+    this.grid = [];
+    let idCounter = 0;
+    for(let i = 0; i < numRows; i++) {
+      let rowDefaultClass = 'row';
+      let rowIdClass = 'r' + i;
+      let newRowClasses = rowDefaultClass + ' ' + rowIdClass;
+      let rowElmntToAppend = '<div class="' + newRowClasses + '"></div>';
+      $('.gameBoard').append(rowElmntToAppend);
+      this.grid[i] = [];
+
+      for(let j = 0; j < numColumns; j++) {
+        this.grid[i][j] = new GridProperties(i, j, idCounter);
+        idCounter++;
+      }
+    }
+    this.drawBorders(borderStyle);
+  }
+  drawBorders(borderProp) {
+    for(let i = 0; i < this.grid[0].length; i++) {
+      this.grid[0][i].elmnt.css('border-top', borderProp);//Top Border
+      this.grid[0][i].canMove.up = false;
+
+      this.grid[this.grid.length - 1][i].elmnt.css('border-bottom', borderProp);//Bottom Border
+      this.grid[this.grid.length - 1][i].canMove.down = false;
+    }
+    for(let i = 0; i < this.grid.length; i++) {
+      this.grid[i][0].elmnt.css('border-left', borderProp);//Left Border
+      this.grid[i][0].canMove.left = false;
+
+      this.grid[i][this.grid[0].length - 1].elmnt.css('border-right', borderProp);//Right Border
+      this.grid[i][this.grid[0].length - 1].canMove.right = false;
+    }
+  }
+}
+var board = new GameBoard(20, 10, '1px solid blue');
 
 
 
@@ -66,68 +80,7 @@ class GridProperties {
 
 
 
-// class BoardSetup {
-//    constructor(borderType) {
-//       this.borderType = borderType;
-//       this.outerBounds();
-//    }
-//    outerBounds(){
-//       var nextRow = 0;
-//       var nextCol = 0;
-//       for(let i = 0; i < gBoard.grid.row.length; i++) {
-//          if(nextCol < gBoard.grid.row[0].length) {
-//             //Top Border
-//             gBoard.grid.row[0][nextCol].canMove.gUp = false;
-//             this.giveBoundsBorder(gBoard.grid.row[0][nextCol], this.borderType)
-//
-//             //Bottom Border
-//             gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].canMove.gDown = false;
-//             this.giveBoundsBorder(gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol], this.borderType)
-//             nextCol++;
-//
-//             //Left Border
-//             gBoard.grid.row[nextRow][0].canMove.gLeft = false;
-//             this.giveBoundsBorder(gBoard.grid.row[nextRow][0], this.borderType);
-//
-//             //Right Border
-//             gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].canMove.gRight = false;
-//             this.giveBoundsBorder(gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1], this.borderType);
-//          }
-//          nextRow++;
-//       }
-//    }
-//    giveBoundsBorder(coord, borderType){
-//       if(!coord.canMove.gLeft){
-//          coord.myEl.css('border-left', borderType);
-//       }
-//       if(!coord.canMove.gRight){
-//          coord.myEl.css('border-right', borderType);
-//       }
-//       if(!coord.canMove.gUp){
-//          coord.myEl.css('border-top', borderType);
-//       }
-//       if(!coord.canMove.gDown){
-//          coord.myEl.css('border-bottom', borderType);
-//       }
-//    }
-//    drawWalls(start, end, index, direction){
-//       switch(direction){
-//          case 'row':
-//             for(let i = start; i < end; i++){
-//                gBoard.grid.row[i][index].canMove.gRight = false;
-//                gBoard.grid.row[i][index + 1].canMove.gLeft = false;
-//                this.giveBoundsBorder(gBoard.grid.row[i][index], this.borderType);
-//             }
-//          break;
-//          case 'col':
-//             for(let i = start; i < end; i++){
-//                gBoard.grid.row[index + 1][i].canMove.gUp = false;
-//                gBoard.grid.row[index][i].canMove.gDown = false;
-//                this.giveBoundsBorder(gBoard.grid.row[index][i], this.borderType);
-//             }
-//          }
-//    }
-// }
+
 // class MakeBoard {
 //    constructor(numberOfRows, numberOfColumns){
 //      this.gW = numberOfColumns;
@@ -318,7 +271,68 @@ class GridProperties {
 //       this.playerPosition;
 //    }
 // }
+// class BoardSetup {
+//    constructor(borderType) {
+//       this.borderType = borderType;
+//       this.outerBounds();
+//    }
+//    outerBounds(){
+//       var nextRow = 0;
+//       var nextCol = 0;
+//       for(let i = 0; i < gBoard.grid.row.length; i++) {
+//          if(nextCol < gBoard.grid.row[0].length) {
+//             //Top Border
+//             gBoard.grid.row[0][nextCol].canMove.gUp = false;
+//             this.giveBoundsBorder(gBoard.grid.row[0][nextCol], this.borderType)
 //
+//             //Bottom Border
+//             gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol].canMove.gDown = false;
+//             this.giveBoundsBorder(gBoard.grid.row[gBoard.grid.row[0].length-1][nextCol], this.borderType)
+//             nextCol++;
+//
+//             //Left Border
+//             gBoard.grid.row[nextRow][0].canMove.gLeft = false;
+//             this.giveBoundsBorder(gBoard.grid.row[nextRow][0], this.borderType);
+//
+//             //Right Border
+//             gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1].canMove.gRight = false;
+//             this.giveBoundsBorder(gBoard.grid.row[nextRow][gBoard.grid.row[0].length-1], this.borderType);
+//          }
+//          nextRow++;
+//       }
+//    }
+//    giveBoundsBorder(coord, borderType){
+//       if(!coord.canMove.gLeft){
+//          coord.myEl.css('border-left', borderType);
+//       }
+//       if(!coord.canMove.gRight){
+//          coord.myEl.css('border-right', borderType);
+//       }
+//       if(!coord.canMove.gUp){
+//          coord.myEl.css('border-top', borderType);
+//       }
+//       if(!coord.canMove.gDown){
+//          coord.myEl.css('border-bottom', borderType);
+//       }
+//    }
+//    drawWalls(start, end, index, direction){
+//       switch(direction){
+//          case 'row':
+//             for(let i = start; i < end; i++){
+//                gBoard.grid.row[i][index].canMove.gRight = false;
+//                gBoard.grid.row[i][index + 1].canMove.gLeft = false;
+//                this.giveBoundsBorder(gBoard.grid.row[i][index], this.borderType);
+//             }
+//          break;
+//          case 'col':
+//             for(let i = start; i < end; i++){
+//                gBoard.grid.row[index + 1][i].canMove.gUp = false;
+//                gBoard.grid.row[index][i].canMove.gDown = false;
+//                this.giveBoundsBorder(gBoard.grid.row[index][i], this.borderType);
+//             }
+//          }
+//    }
+// }
 //
 //
 // var gBoard = new MakeBoard(21, 21);
