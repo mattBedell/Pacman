@@ -1,10 +1,10 @@
 class GridProperties {
   constructor(gridRow, gridColumn, totalId) {
     this.canMove = {
-      up: true,
-      down: true,
-      left: true,
-      right: true
+      dUp: true,
+      dDown: true,
+      dLeft: true,
+      dRight: true
     }
     this.elmnt;
     this.row = gridRow;
@@ -58,39 +58,44 @@ class GameBoard {
   drawBorders(borderProp) {
     for(let i = 0; i < this.grid[0].length; i++) {
       this.grid[0][i].elmnt.css('border-top', borderProp);//Top Border
-      this.grid[0][i].canMove.up = false;
+      this.grid[0][i].canMove.dUp = false;
 
       this.grid[this.grid.length - 1][i].elmnt.css('border-bottom', borderProp);//Bottom Border
-      this.grid[this.grid.length - 1][i].canMove.down = false;
+      this.grid[this.grid.length - 1][i].canMove.dDown = false;
     }
     for(let i = 0; i < this.grid.length; i++) {
       this.grid[i][0].elmnt.css('border-left', borderProp);//Left Border
-      this.grid[i][0].canMove.left = false;
+      this.grid[i][0].canMove.dLeft = false;
 
       this.grid[i][this.grid[0].length - 1].elmnt.css('border-right', borderProp);//Right Border
-      this.grid[i][this.grid[0].length - 1].canMove.right = false;
+      this.grid[i][this.grid[0].length - 1].canMove.dRight = false;
     }
   }
+  updateGrid(mySprite) {
+    this.grid[mySprite.row][mySprite.column].elmnt.css('background-image', mySprite.assets.current);
+    this.grid[mySprite.oldRow][mySprite.oldColumn].elmnt.css('background-image', '');
+  }
 }
-
 class Sprite {
-  constructor(spriteType, startingRow, startingColumn, startingDirection, directionInput, gBoard) {
+  constructor(spriteType, startingRow, startingColumn, gBoard) {
+    this.spriteType = spriteType;
     this.row = startingRow;
     this.column = startingColumn;
-    this.direction = startingDirection;
-    this.readBoard = gBoard;
+    this.oldRow = this.row;
+    this.oldColumn = this.column;
+    this.readGrid = gBoard;
     this.assets = {
       counter: 0,
       current: undefined,
       list: undefined,
     }
-    switch(spriteType) {
+    switch(this.spriteType) {
       case 'pacman':
         this.assets.list = {
-          right: ['url(assets/pacStart.png)', 'url(assets/pacRight2.png)', 'url(assets/pacRight3.png)'],
-          left: ['url(assets/pacStart.png)', 'url(assets/pacLeft2.png)', 'url(assets/pacLeft3.png)'],
-          up: ['url(assets/pacStart.png)', 'url(assets/pacUp2.png)', 'url(assets/pacUp3.png)'],
-          down: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
+          aRight: ['url(assets/pacStart.png)', 'url(assets/pacRight2.png)', 'url(assets/pacRight3.png)'],
+          aLeft: ['url(assets/pacStart.png)', 'url(assets/pacLeft2.png)', 'url(assets/pacLeft3.png)'],
+          aUp: ['url(assets/pacStart.png)', 'url(assets/pacUp2.png)', 'url(assets/pacUp3.png)'],
+          aDown: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
         }
         break;
       case 'ghostRed':
@@ -98,10 +103,119 @@ class Sprite {
         break;
     }
   }
+  checkMove(direction) {
+    switch(direction) {
+      case 'right':
+        if (this.readGrid[this.row][this.column].canMove.dRight === true) {
+          this.oldColumn = this.column;
+          this.column += 1;
+          this.updateAsset(direction);
+        }
+        break;
+      case 'left':
+        if (this.readGrid[this.row][this.column].canMove.dLeft === true) {
+          this.oldColumn = this.column;
+          this.column -= 1;
+          this.updateAsset(direction);
+        }
+        break;
+      case 'up':
+        if (this.readGrid[this.row][this.column].canMove.dUp === true) {
+          this.oldRow = this.row;
+          this.row -= 1;
+          this.updateAsset(direction);
+        }
+        break;
+      case 'down':
+        if (this.readGrid[this.row][this.column].canMove.dDown === true) {
+          this.oldRow = this.row;
+          this.row += 1;
+          this.updateAsset(direction);
+        }
+        break;
+    }
+  }
+  updateAsset(direction) {
+    switch(direction){
+      case 'right':
+        if(this.assets.counter < this.assets.list.aRight.length) {
+          this.assets.current = this.assets.list.aRight[this.assets.counter];
+          this.assets.counter++;
+        } else {
+          this.assets.counter = 0;
+          this.assets.current = this.assets.list.aRight[this.assets.counter];
+        }
+      break;
+      case 'left':
+        if(this.assets.counter < this.assets.list.aLeft.length) {
+          this.assets.current = this.assets.list.aLeft[this.assets.counter];
+          this.assets.counter++;
+        } else {
+          this.assets.counter = 0;
+          this.assets.current = this.assets.list.aLeft[this.assets.counter];
+        }
+      break;
+      case 'up':
+        if(this.assets.counter < this.assets.list.aUp.length) {
+          this.assets.current = this.assets.list.aUp[this.assets.counter];
+          this.assets.counter;
+        } else {
+          this.assets.counter = 0;
+          this.assets.current = this.assets.list.aUp[this.assets.counter];
+        }
+      break;
+      case 'down':
+        if(this.assets.counter < this.assets.list.aDown.length) {
+          this.assets.current = this.assets.list.aDown[this.assets.counter];
+          this.assets.counter;
+        } else {
+          this.assets.counter = 0;
+          this.assets.current = this.assets.list.aDown[this.assets.counter];
+        }
+      break;
+    }
+  }
 }
-var board = new GameBoard(20, 20, '1px solid blue');
 
 
+class GameController {
+  constructor() {
+    this.playerInput = 'right';
+    this.board = new GameBoard(20, 20, '1px solid blue');
+    this.player = new Sprite('pacman', 0, 0, this.board.grid);
+    this.intervalId;
+    this.runMove();
+    this.getInput();
+  }
+  runMove() {
+    let that = this;
+    this.intervalId = setInterval(function() {
+      that.player.checkMove(that.playerInput);
+      that.board.updateGrid(that.player);
+    }, 300)
+  }
+  getInput() {
+    let that = this;
+    $('body').on('keydown', function(e){
+       switch(e.keyCode){
+          case 38://UP
+            that.playerInput = 'up';
+          break;
+          case 40://DOWN
+            that.playerInput = 'down';
+          break;
+          case 37://LEFT
+            that.playerInput = 'left';
+          break;
+          case 39://RIGHT
+            that.playerInput = 'right';
+          break;
+       }
+    })
+  }
+}
+
+var game = new GameController();
 
 
 
