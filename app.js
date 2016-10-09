@@ -226,10 +226,10 @@ class GameController {
     })
   }
 }
-class MapBuilder {
+class MapCreator {
   constructor(boardGrid) {
     this.grid = boardGrid;
-    this.wallCoords = {
+    this.gridCoords = {
       rI: [],
       cI: []
     }
@@ -255,21 +255,56 @@ class MapBuilder {
           }
         }
       break;
+      case 'dots':
+        for(let i = 0; i < this.grid.length; i++) {
+          for(let j = 0; j < this.grid[0].length; j++) {
+            this.grid[i][j].elmnt.on('click', function(){
+              that.removeDots(i, j);
+            })
+          }
+        }
+      break;
     }
   }
   drawRows(rIndex, cIndex) {
-    this.wallCoords.rI.push(rIndex);
-    this.wallCoords.cI.push(cIndex);
+    this.gridCoords.rI.push(rIndex);
+    this.gridCoords.cI.push(cIndex);
     this.grid[rIndex][cIndex].elmnt.css('border-right', '1px solid blue');
     this.grid[rIndex][cIndex].canMove.dRight = false;
     this.grid[rIndex][cIndex + 1].canMove.dLeft = false;
   }
   drawColumns(rIndex, cIndex) {
-    this.wallCoords.rI.push(rIndex);
-    this.wallCoords.cI.push(cIndex);
+    this.gridCoords.rI.push(rIndex);
+    this.gridCoords.cI.push(cIndex);
     this.grid[rIndex][cIndex].elmnt.css('border-bottom', '1px solid blue');
     this.grid[rIndex][cIndex].canMove.dDown = false;
     this.grid[rIndex + 1][cIndex].canMove.dUp = false;
+  }
+  removeDots(rIndex, cIndex) {
+    this.gridCoords.rI.push(rIndex);
+    this.gridCoords.cI.push(cIndex);
+    this.grid[rIndex][cIndex].elmnt.children().removeClass('dot');
+  }
+}
+class MapBuilder {
+  constructor(rowCoords, colCoords) {
+    this.rowCoords = rowCoords;
+    this.colCoords = colCoords;
+  }
+  drawRows() {
+    this.grid[this.rowCoords.rI][this.rowCoords.cI].elmnt.css('border-right', '1px solid blue');
+    this.grid[this.rowCoords.rI][this.rowCoords.cI].canMove.dRight = false;
+    this.grid[this.rowCoords.rI][this.rowCoords.cI + 1].canMove.dLeft = false;
+  }
+  drawColumns() {
+    this.grid[this.colCoords.rI][this.colCords.cI].elmnt.css('border-bottom', '1px solid blue');
+    this.grid[this.colCoords.rI][this.colCords.cI].canMove.dDown = false;
+    this.grid[this.colCoords.rI + 1][this.colCords.cI].canMove.dUp = false;
+  }
+  removeDots(rIndex, cIndex) {
+    this.gridCoords.rI.push(rIndex);
+    this.gridCoords.cI.push(cIndex);
+    this.grid[rIndex][cIndex].elmnt.children().removeClass('dot');
   }
 }
 
@@ -282,4 +317,4 @@ class MapBuilder {
 
 
 var game = new GameController();
-var mapB = new MapBuilder(game.board.grid);
+var mapB = new MapCreator(game.board.grid);
