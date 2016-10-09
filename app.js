@@ -193,7 +193,7 @@ class Sprite {
 class GameController {
   constructor() {
     this.playerInput = 'right';
-    this.board = new GameBoard(20, 20, '1px solid blue');
+    this.board = new GameBoard(21, 21, '1px solid blue');
     this.player = new Sprite('pacman', 0, 0, this.board.grid);
     this.intervalId;
     this.runMove();
@@ -287,19 +287,26 @@ class MapCreator {
   }
 }
 class MapBuilder {
-  constructor(rowCoords, colCoords) {
+  constructor(rowCoords, colCoords, gameGrid) {
     this.rowCoords = rowCoords;
     this.colCoords = colCoords;
+    this.grid = gameGrid;
+    this.drawRows();
+    this.drawColumns();
   }
   drawRows() {
-    this.grid[this.rowCoords.rI][this.rowCoords.cI].elmnt.css('border-right', '1px solid blue');
-    this.grid[this.rowCoords.rI][this.rowCoords.cI].canMove.dRight = false;
-    this.grid[this.rowCoords.rI][this.rowCoords.cI + 1].canMove.dLeft = false;
+    for(let i = 0; i < this.rowCoords.rI.length; i++){
+      this.grid[this.rowCoords.rI[i]][this.rowCoords.cI[i]].elmnt.css('border-right', '1px solid blue');
+      this.grid[this.rowCoords.rI[i]][this.rowCoords.cI[i]].canMove.dRight = false;
+      this.grid[this.rowCoords.rI[i]][this.rowCoords.cI[i] + 1].canMove.dLeft = false;
+    }
   }
   drawColumns() {
-    this.grid[this.colCoords.rI][this.colCords.cI].elmnt.css('border-bottom', '1px solid blue');
-    this.grid[this.colCoords.rI][this.colCords.cI].canMove.dDown = false;
-    this.grid[this.colCoords.rI + 1][this.colCords.cI].canMove.dUp = false;
+    for(let i = 0; i < this.colCoords.rI.length; i++){
+      this.grid[this.colCoords.rI[i]][this.colCoords.cI[i]].elmnt.css('border-bottom', '1px solid blue');
+      this.grid[this.colCoords.rI[i]][this.colCoords.cI[i]].canMove.dDown = false;
+      this.grid[this.colCoords.rI[i] + 1][this.colCoords.cI[i]].canMove.dUp = false;
+    }
   }
   removeDots(rIndex, cIndex) {
     this.gridCoords.rI.push(rIndex);
@@ -309,12 +316,25 @@ class MapBuilder {
 }
 
 
-
-
-
-
-
+var rowCoords = {
+  rI: [1, 2, 1, 2, 1, 2, 1, 2, 0, 1, 2, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2],
+  cI: [0, 0, 3, 3, 4, 4, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 15, 15, 16, 16, 19, 19 ]
+}
+var colCoords = {
+  rI: [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2],
+  cI: [ 1, 2, 3, 1, 2, 3, 5, 6, 7, 8, 5, 6, 7, 8, 12, 13, 14, 15, 12, 13, 14, 15, 17, 18, 19, 17, 18, 19 ]
+}
 
 
 var game = new GameController();
 var mapB = new MapCreator(game.board.grid);
+
+
+var makeWalls = new MapBuilder(rowCoords, colCoords, game.board.grid);
+
+
+
+
+
+
+//
