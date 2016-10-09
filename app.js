@@ -211,16 +211,24 @@ class GameController {
     $('body').on('keydown', function(e){
        switch(e.keyCode){
           case 38://UP
-            that.playerInput = 'up';
+            if(that.board.grid[that.player.row][that.player.column].canMove.dUp === true){
+              that.playerInput = 'up';
+            }
           break;
           case 40://DOWN
+          if(that.board.grid[that.player.row][that.player.column].canMove.dDown === true){
             that.playerInput = 'down';
+          }
           break;
           case 37://LEFT
+          if(that.board.grid[that.player.row][that.player.column].canMove.dLeft === true){
             that.playerInput = 'left';
+          }
           break;
           case 39://RIGHT
+          if(that.board.grid[that.player.row][that.player.column].canMove.dRight === true){
             that.playerInput = 'right';
+          }
           break;
        }
     })
