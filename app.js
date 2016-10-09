@@ -295,12 +295,14 @@ class MapCreator {
   }
 }
 class MapBuilder {
-  constructor(rowCoords, colCoords, gameGrid) {
+  constructor(rowCoords, colCoords, dotCoord, gameGrid) {
     this.rowCoords = rowCoords;
     this.colCoords = colCoords;
+    this.dotCoords = dotCoord;
     this.grid = gameGrid;
     this.drawRows();
     this.drawColumns();
+    this.removeDots();
   }
   drawRows() {
     for(let i = 0; i < this.rowCoords.rI.length; i++){
@@ -316,10 +318,10 @@ class MapBuilder {
       this.grid[this.colCoords.rI[i] + 1][this.colCoords.cI[i]].canMove.dUp = false;
     }
   }
-  removeDots(rIndex, cIndex) {
-    this.gridCoords.rI.push(rIndex);
-    this.gridCoords.cI.push(cIndex);
-    this.grid[rIndex][cIndex].elmnt.children().removeClass('dot');
+  removeDots() {
+    for(let i = 0; i < this.dotCoords.rI.length; i++){
+      this.grid[this.dotCoords.rI[i]][this.dotCoords.cI[i]].elmnt.children().removeClass('dot');
+    }
   }
 }
 
@@ -370,6 +372,28 @@ var colCoords = {
     ]
 }
 
+var dotCoords = {
+  rI: [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 0, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2,
+    1, 1, 1, 2, 2, 2, 4, 4, 4, 4, 5, 6, 7, 8, 6, 6, 6, 4, 4, 4, 4, 4, 4, 4, 5, 6,
+     6, 6, 6, 6, 7, 8, 5, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 9, 9, 9, 9, 8, 7, 7, 7, 8,
+     8, 8, 8, 8, 8, 8, 8, 8, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 11,
+     11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 11, 11, 11, 13, 13, 13, 14, 14, 15, 15, 14, 14,
+       15, 14, 14, 14, 14, 15, 15, 15, 14, 14, 13, 13, 13, 14, 16, 16, 17, 16, 15,
+        17, 17, 17, 17, 18, 19, 19, 18, 19, 19, 19, 19, 19, 18, 19, 20, 17, 16, 17,
+        17, 17, 17, 18, 18, 19, 19, 15, 16, 17, 16, 16, 18, 19, 19, 19, 19, 19, 11,
+         11, 11, 11, 11, 11, 11, 11, 11, 11, 10],
+  cI: [1, 2, 3, 3, 2, 1, 5, 6, 7, 8, 8, 7, 6, 5, 10, 10, 10, 12, 13, 14, 15, 15,
+    14, 13, 12, 17, 18, 19, 19, 18, 17, 17, 18, 19, 15, 15, 15, 15, 15, 14, 13,
+    12, 13, 12, 11, 10, 9, 8, 7, 10, 10, 8, 7, 6, 5, 5, 5, 5, 5, 3, 2, 1, 0, 1,
+    2, 3, 3, 3, 3, 2, 1, 0, 0, 0, 1, 2, 2, 1, 7, 8, 9, 10, 11, 12, 13, 17, 18, 19,
+     20, 20, 19, 18, 17, 17, 18, 19, 20, 20, 19, 18, 17, 0, 1, 2, 4, 5, 5, 6, 7, 8,
+      9, 11, 12, 13, 14, 15, 15, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 18, 19, 20,
+       17, 18, 19, 19, 15, 15, 14, 14, 12, 12, 11, 10, 9, 8, 8, 6, 5, 5, 6, 3, 2, 1,
+        1, 1, 2, 3, 3, 3, 5, 6, 7, 8, 8, 8, 7, 7, 5, 4, 3, 2, 1, 1, 10, 10, 10, 10,
+         12, 13, 14, 15, 12, 13, 13, 12, 17, 17, 17, 18, 19, 19, 19, 18, 17, 16,
+          15, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10]
+}
 
 
 
@@ -377,7 +401,7 @@ var game = new GameController();
 var mapB = new MapCreator(game.board.grid);
 
 
-var makeWalls = new MapBuilder(rowCoords, colCoords, game.board.grid);
+var makeWalls = new MapBuilder(rowCoords, colCoords, dotCoords, game.board.grid);
 
 
 
