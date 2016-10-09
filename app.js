@@ -92,6 +92,7 @@ class GameBoard {
 class Sprite {
   constructor(spriteType, startingRow, startingColumn, gBoard) {
     this.spriteType = spriteType;
+    this.aiDirection;
     this.row = startingRow;
     this.column = startingColumn;
     this.readGrid = gBoard;
@@ -203,7 +204,7 @@ class GameController {
     this.intervalId = setInterval(function() {
       that.player.checkMove(that.playerInput);
       that.board.updateGrid(that.player, that.playerInput);
-    }, 300)
+    }, 100)
   }
   getInput() {
     let that = this;
@@ -225,5 +226,60 @@ class GameController {
     })
   }
 }
+class MapBuilder {
+  constructor(boardGrid) {
+    this.grid = boardGrid;
+    this.wallCoords = {
+      rI: [],
+      cI: []
+    }
+  }
+  runClick(direction) {
+    let that = this;
+    switch(direction){
+      case 'rows':
+      for(let i = 0; i < this.grid.length; i++) {
+        for(let j = 0; j < this.grid[0].length; j++) {
+          this.grid[i][j].elmnt.on('click', function(){
+            that.drawRows(i, j);
+          })
+        }
+      }
+      break;
+      case 'columns':
+        for(let i = 0; i < this.grid.length; i++) {
+          for(let j = 0; j < this.grid[0].length; j++) {
+            this.grid[i][j].elmnt.on('click', function(){
+              that.drawColumns(i, j);
+            })
+          }
+        }
+      break;
+    }
+  }
+  drawRows(rIndex, cIndex) {
+    this.wallCoords.rI.push(rIndex);
+    this.wallCoords.cI.push(cIndex);
+    this.grid[rIndex][cIndex].elmnt.css('border-right', '1px solid blue');
+    this.grid[rIndex][cIndex].canMove.dRight = false;
+    this.grid[rIndex][cIndex + 1].canMove.dLeft = false;
+  }
+  drawColumns(rIndex, cIndex) {
+    this.wallCoords.rI.push(rIndex);
+    this.wallCoords.cI.push(cIndex);
+    this.grid[rIndex][cIndex].elmnt.css('border-bottom', '1px solid blue');
+    this.grid[rIndex][cIndex].canMove.dDown = false;
+    this.grid[rIndex + 1][cIndex].canMove.dUp = false;
+  }
+}
+
+
+
+
+
+
+
+
 
 var game = new GameController();
+var mapB = new MapBuilder(game.board.grid);
