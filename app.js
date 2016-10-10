@@ -407,26 +407,42 @@ class GameController {
     this.player = new Sprite('pacman', 20, 0, this.board.grid);
     this.blueGhost = new Sprite('ghostBlue', 11, 6, this.board.grid);
     this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid)
+    this.redGhost = new Sprite('ghostRed', 11, 10, this.board.grid)
     this.score = 0;
-    this.intervalId;
+    this.playerIntervalId;
+    this.aiIntervalId;
     this.buildMap = new MapBuilder(rowCoords, colCoords, dotCoords, this.board.grid);
     this.runMove();
     this.getInput();
   }
   runMove() {
     let that = this;
-    this.intervalId = setInterval(function() {
-      //that.player.checkMove(that.playerInput);
-      //that.board.updateGrid(that.player, that.playerInput);
+    this.playerIntervalId = setInterval(function() {
+      that.player.checkMove(that.playerInput);
+      that.board.updateGrid(that.player, that.playerInput);
 
+      that.takeDotGiveScore(that.player.row, that.player.column);
+      that.checkDeath();
+    }, 150)
+    this.aiIntervalId = setInterval(function() {
       that.blueGhost.ghostMove();
       that.board.updateGrid(that.blueGhost, that.blueGhost.aiDirection);
 
       that.pinkGhost.ghostMove();
       that.board.updateGrid(that.pinkGhost, that.pinkGhost.aiDirection);
 
-      that.takeDotGiveScore(that.player.row, that.player.column);
-    }, 100)
+      that.redGhost.ghostMove();
+      that.board.updateGrid(that.redGhost, that.redGhost.aiDirection);
+    }, 300)
+  }
+  checkDeath(){
+    if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
+
+    } else if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
+
+    } else if (this.player.row === this.pinkGhost.row && this.player.column === this.pinkGhost.column) {
+
+    }
   }
   getInput() {
     let that = this;
