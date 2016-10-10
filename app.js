@@ -514,7 +514,7 @@ class GameController {
 
       that.orangeGhost.ghostMove();
       that.board.updateGrid(that.orangeGhost, that.orangeGhost.aiDirection);
-    }, 300)
+    }, 150)
   }
   checkDeath(){
       if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
