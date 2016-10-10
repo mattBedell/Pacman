@@ -5,6 +5,15 @@ body{
   background-color: black;/*rgba(0, 0, 0, 0.7);*/
   font-family: 'Press Start 2P', cursive;
 }
+.conditionAlert {
+  height: 200px;
+  width: 300px;
+  background-color: red;
+  position: fixed;
+  top: 35%;
+  border: 1px solid blue;
+  color: white;
+}
 .gameBoard {
   display:flex;
   flex-direction: column;

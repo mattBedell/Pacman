@@ -11,6 +11,7 @@ class GridProperties {
     this.col = gridColumn;
     this.gridId = totalId;
     this.hasDot = true;
+    this.hasPac = false;
     this.addElmnts();
   }
   addElmnts() {
@@ -69,19 +70,26 @@ class GameBoard {
   }
   updateGrid(mySprite, direction) {
     this.grid[mySprite.row][mySprite.column].elmnt.css('background-image', mySprite.assets.current);
+    this.grid[mySprite.row][mySprite.column].hasPac = true;
     switch(direction) {
       case 'right':
         this.grid[mySprite.row ][mySprite.column - 1].elmnt.css('background-image', '');
+        this.grid[mySprite.row ][mySprite.column - 1].hasPac = false;
         break;
       case 'left':
         this.grid[mySprite.row][mySprite.column + 1].elmnt.css('background-image', '');
+        this.grid[mySprite.row ][mySprite.column + 1].hasPac = false;
         break;
       case 'up':
         this.grid[mySprite.row + 1][mySprite.column ].elmnt.css('background-image', '');
+          this.grid[mySprite.row + 1][mySprite.column].hasPac = false;
         break;
       case 'down':
         this.grid[mySprite.row - 1][mySprite.column ].elmnt.css('background-image', '');
+          this.grid[mySprite.row - 1][mySprite.column].hasPac = false;
         break;
+      case 'reset':
+        this.grid[mySprite.row][mySprite.column].elmnt.css('background-image', '');
     }
   }
   updateTeleport(mySprite, direction){
@@ -93,6 +101,14 @@ class GameBoard {
       case 'right':
         this.grid[10][20].elmnt.css('background-image', '');
         break;
+      case 'start':
+        for(let i = 0; i < this.grid.length; i ++) {
+          for(let j = 0; j < this.grid[i].length; j ++) {
+            if(this.grid[i][j].hasPac === true) {
+              this.grid[i][j].elmnt.css('background-image', '');
+          }
+        }
+      }
     }
   }
 }
@@ -408,6 +424,13 @@ class Sprite {
         this.assets.current = this.assets.list;
     }
   }
+  flashPlayer () {
+    if(this.assets.current != '') {
+      this.assets.current = '';
+    } else {
+      this.assets.current = this.assets.list.aRight[0];
+    }
+  }
 }
 
 
@@ -433,7 +456,7 @@ class GameController {
   runGame() {
     let that = this;
     this.playerIntervalId = setInterval(function() {
-      that.playerTeleport();
+      that.playerTeleport(that.playerInput);
       that.player.checkMove(that.playerInput);
       that.board.updateGrid(that.player, that.playerInput);
 
@@ -456,22 +479,63 @@ class GameController {
     }, 300)
   }
   checkDeath(){
-    if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
-      this.lives -= 1;
-      this.removeLifeIcon();
+    if(this.lives > 0){
+      if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
+        this.playerDeath();
+      }
+      if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
+        this.playerDeath();
+      }
+      if (this.player.row === this.pinkGhost.row && this.player.column === this.pinkGhost.column) {
+        this.playerDeath();
+      }
+      if (this.player.row === this.orangeGhost.row && this.player.column === this.orangeGhost.column) {
+        this.playerDeath();
+      }
+    } else {
+      console.log('You Lost!');
     }
-    if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
-      this.lives -= 1;
-      this.removeLifeIcon();
-    }
-    if (this.player.row === this.pinkGhost.row && this.player.column === this.pinkGhost.column) {
-      this.lives -= 1;
-      this.removeLifeIcon();
-    }
-    if (this.player.row === this.orangeGhost.row && this.player.column === this.orangeGhost.column) {
-      this.lives -= 1;
-      this.removeLifeIcon();
-    }
+  }
+  playerDeath () {
+    this.lives -= 1;
+    this.removeLifeIcon();
+    this.resetSprites();
+    let that = this;
+    let counter = 0;
+    this.pauseGame();
+    let pauseInterval = setInterval(function(){
+      that.player.flashPlayer();
+      that.board.updateGrid(that.player)
+      counter += 100;
+      if(counter > 1000) {
+        clearInterval(pauseInterval);
+        that.runGame();
+        that.playerTeleport('start');
+      }
+    }, 300)
+  }
+  resetSprites(){
+
+    this.board.updateGrid(this.pinkGhost, 'reset');
+    this.pinkGhost.row = 11;
+    this.pinkGhost.column = 14;
+    this.board.updateGrid(this.pinkGhost, this.pinkGhost.aiDirection);
+
+    this.board.updateGrid(this.blueGhost, 'reset');
+    this.blueGhost.row = 11;
+    this.blueGhost.column  = 6;
+    this.board.updateGrid(this.blueGhost, this.blueGhost.aiDirection);
+
+    this.board.updateGrid(this.redGhost, 'reset');
+    this.redGhost.row = 11;
+    this.redGhost.column = 10;
+    this.board.updateGrid(this.redGhost, this.redGhost.aiDirection);
+
+    this.board.updateGrid(this.orangeGhost, 'reset');
+    this.orangeGhost.row = 11;
+    this.orangeGhost.column = 10;
+    this.board.updateGrid(this.orangeGhost, this.orangeGhost.aiDirection);
+
   }
   removeLifeIcon() {
     switch(this.lives){
@@ -488,17 +552,28 @@ class GameController {
       break;
     }
   }
-  playerTeleport(){
-    if(this.player.row === 10 && this.player.column === 0 && this.playerInput === 'left') {
-      this.player.row = 10;
-      this.player.column = 20;
-      this.board.updateTeleport(this.player, this.playerInput);
-    }
-    if(this.player.row === 10 && this.player.column === 20 && this.playerInput === 'right') {
-      this.player.row = 10;
-      this.player.column = 0;
-      this.board.updateTeleport(this.player, this.playerInput);
-    }
+  playerTeleport(direction) {
+    switch(direction) {
+      case 'left':
+        if(this.player.row === 10 && this.player.column === 0) {
+          this.player.row = 10;
+          this.player.column = 20;
+          this.board.updateTeleport(this.player, this.playerInput);
+        }
+      break;
+      case 'right':
+        if(this.player.row === 10 && this.player.column === 20) {
+          this.player.row = 10;
+          this.player.column = 0;
+          this.board.updateTeleport(this.player, this.playerInput);
+        }
+      break;
+
+      case 'start':
+      this.player.row = 15;
+      this.player.column = 9;
+      this.board.updateTeleport(this.player, direction);
+  }
   }
   getInput() {
     let that = this;
@@ -535,7 +610,7 @@ class GameController {
       $('.scoreNum').text('Score: ' + this.score * 100);
     }
   }
-  countTotalDots(){
+  countTotalDots() {
     for(let i = 0; i < this.board.grid.length; i++) {
       for(let j = 0; j < this.board.grid[i].length; j++){
         if(this.board.grid[i][j].hasDot == true) {
@@ -543,6 +618,10 @@ class GameController {
         }
       }
     }
+  }
+  pauseGame() {
+    clearInterval(this.playerIntervalId);
+    clearInterval(this.aiIntervalId)
   }
 }
 class MapCreator {
