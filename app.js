@@ -31,10 +31,6 @@ class GridProperties {
     let dotElmnt = '<div class="' + dotClasses + '"></div>';
     $(this.elmnt).append(dotElmnt);
   }
-  removeDot() {
-    this.hasDot = false;
-    $(this.elmnt).children().removeClass('dot');
-  }
 }
 class GameBoard {
   constructor(numRows, numColumns, borderStyle) {
@@ -92,7 +88,7 @@ class GameBoard {
 class Sprite {
   constructor(spriteType, startingRow, startingColumn, gBoard) {
     this.spriteType = spriteType;
-    this.aiDirection;
+    this.aiDirection = 'right';
     this.row = startingRow;
     this.column = startingColumn;
     this.readGrid = gBoard;
@@ -113,7 +109,219 @@ class Sprite {
       case 'ghostRed':
         this.assets.list = 'url(assets/ghostRed.png)';
         break;
+      case 'ghostBlue':
+        this.assets.list = 'url(assets/ghostBlue.png)';
+        break;
+      case 'ghostPink':
+        this.assets.list = 'url(assets/ghostPink.png)';
+        break;
+      case 'ghostOrange':
+        this.assets.list = 'url(assets/ghostOrange.png)';
+        break;
     }
+  }
+  ghostMove() {
+     switch(this.aiDirection) {
+       case 'right'://RIGHT MASTER
+         if (this.readGrid[this.row][this.column].canMove.dRight === true || this.readGrid[this.row][this.column].canMove.dUp === true || this.readGrid[this.row][this.column].canMove.dDown === true) {
+           let randomDirection = Math.floor(Math.random() * 3);
+           switch(randomDirection){
+             case 0://UP
+               if(this.readGrid[this.row][this.column].canMove.dUp === true) {
+                 this.row -= 1;
+                 this.aiDirection = 'up';
+                 this.updateAsset();
+               } else if(this.readGrid[this.row][this.column].canMove.dDown === true){
+                 this.row += 1;
+                 this.aiDirection = 'down';
+                 this.updateAsset();
+               } else if (this.readGrid[this.row][this.column].canMove.dRight === true) {
+                 this.column += 1;
+                 this.aiDirection = 'right';
+                 this.updateAsset();
+               }
+             break;
+
+             case 1://DOWN
+               if(this.readGrid[this.row][this.column].canMove.dDown === true){
+                 this.row += 1;
+                 this.aiDirection = 'down';
+                 this.updateAsset();
+               } else if (this.readGrid[this.row][this.column].canMove.dUp === true) {
+                 this.row -= 1;
+                 this.aiDirection = 'up';
+                 this.updateAsset();
+               } else if (this.readGrid[this.row][this.column].canMove.dRight === true) {
+                 this.column += 1;
+                 this.aiDirection = 'right';
+                 this.updateAsset();
+               }
+             break;
+
+             default:
+              if(this.readGrid[this.row][this.column].canMove.dRight === true) {
+                this.column += 1;
+                this.aiDirection = 'right';
+                this.updateAsset();
+              }
+           }
+         } else if (this.readGrid[this.row][this.column].canMove.dLeft === true) {
+           this.column -= 1;
+           this.aiDirection = 'left';
+           this.updateAsset();
+         }
+         break;
+
+       case 'left'://LEFT MASTER
+       if (this.readGrid[this.row][this.column].canMove.dLeft === true || this.readGrid[this.row][this.column].canMove.dUp === true || this.readGrid[this.row][this.column].canMove.dDown === true) {
+         let randomDirection = Math.floor(Math.random() * 3);
+         switch(randomDirection){
+           case 0://UP
+             if(this.readGrid[this.row][this.column].canMove.dUp === true) {
+               this.row -= 1;
+               this.aiDirection = 'up';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dDown === true){
+               this.row += 1;
+               this.aiDirection = 'down';
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dLeft === true){
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             }
+           break;
+
+           case 1://DOWN
+             if(this.readGrid[this.row][this.column].canMove.dDown === true){
+               this.row += 1;
+               this.aiDirection = 'down';
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dUp === true) {
+               this.row -= 1;
+               this.aiDirection = 'up';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dLeft === true){
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             }
+           break;
+
+           default:
+           if(this.readGrid[this.row][this.column].canMove.dLeft === true){
+              this.column -= 1;
+              this.aiDirection = 'left';
+              this.updateAsset();
+            }
+         }
+       } else if (this.readGrid[this.row][this.column].canMove.dRight === true){
+         this.column += 1;
+         this.aiDirection = 'right';
+         this.updateAsset();
+       }
+       break;
+
+       case 'up'://UP MASTER
+       if (this.readGrid[this.row][this.column].canMove.dUp === true || this.readGrid[this.row][this.column].canMove.dLeft === true || this.readGrid[this.row][this.column].canMove.dRight === true) {
+         let randomDirection = Math.floor(Math.random() * 3);
+         switch(randomDirection){
+           case 0://LEFT
+             if(this.readGrid[this.row][this.column].canMove.dLeft === true) {
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dRight === true) {
+               this.column += 1;
+               this.aiDirection = 'right';
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dUp === true){
+               this.row -= 1;
+               this.aiDirection = 'up';
+               this.updateAsset();
+             }
+           break;
+
+           case 1://RIGHT
+             if(this.readGrid[this.row][this.column].canMove.dRight === true){
+               this.column += 1;
+               this.aiDirection = 'right';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dLeft === true) {
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dUp === true){
+               this.row -= 1;
+               this.aiDirection = 'up';
+               this.updateAsset();
+             }
+           break;
+
+           default:
+            if(this.readGrid[this.row][this.column].canMove.dUp === true){
+              this.row -= 1;
+              this.aiDirection = 'up';
+              this.updateAsset();
+            }
+         }
+       } else if (this.readGrid[this.row][this.column].canMove.dDown === true) {
+         this.row += 1;
+         this.aiDirection = 'down';
+         this.updateAsset();
+       }
+       break;
+
+       case 'down'://DOWN MASTER
+       if (this.readGrid[this.row][this.column].canMove.dDown === true || this.readGrid[this.row][this.column].canMove.dLeft === true || this.readGrid[this.row][this.column].canMove.dRight === true) {
+         let randomDirection = Math.floor(Math.random() * 3);
+         switch(randomDirection){
+           case 0://LEFT
+             if(this.readGrid[this.row][this.column].canMove.dLeft === true) {
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dRight === true) {
+               this.column += 1;
+               this.aiDirection = 'right'
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dDown === true) {
+               this.row += 1;
+               this.aiDirection = 'down';
+               this.updateAsset();
+             }
+           break;
+
+           case 1://RIGHT
+             if(this.readGrid[this.row][this.column].canMove.dRight === true){
+               this.column += 1;
+               this.aiDirection = 'right';
+               this.updateAsset();
+             } else if (this.readGrid[this.row][this.column].canMove.dLeft === true) {
+               this.column -= 1;
+               this.aiDirection = 'left';
+               this.updateAsset();
+             } else if(this.readGrid[this.row][this.column].canMove.dDown === true){
+               this.row += 1;
+               this.aiDirection = 'down';
+               this.updateAsset();
+             }
+           break;
+
+           default:
+            if(this.readGrid[this.row][this.column].canMove.dDown === true){
+              this.row += 1;
+              this.aiDirection = 'down';
+              this.updateAsset();
+            }
+         }
+       } else if(this.readGrid[this.row][this.column].canMove.dUp === true){
+         this.row -= 1;
+         this.aiDirection = 'up';
+         this.updateAsset();
+       }
+       break;
+     }
   }
   checkMove(direction) {
     switch(direction) {
@@ -185,6 +393,8 @@ class Sprite {
           this.assets.counter++;
         }
       break;
+      default:
+        this.assets.current = this.assets.list;
     }
   }
 }
@@ -194,16 +404,28 @@ class GameController {
   constructor() {
     this.playerInput = 'right';
     this.board = new GameBoard(21, 21, '1px solid blue');
-    this.player = new Sprite('pacman', 0, 0, this.board.grid);
+    this.player = new Sprite('pacman', 20, 0, this.board.grid);
+    this.blueGhost = new Sprite('ghostBlue', 11, 6, this.board.grid);
+    this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid)
+    this.score = 0;
     this.intervalId;
+    this.buildMap = new MapBuilder(rowCoords, colCoords, dotCoords, this.board.grid);
     this.runMove();
     this.getInput();
   }
   runMove() {
     let that = this;
     this.intervalId = setInterval(function() {
-      that.player.checkMove(that.playerInput);
-      that.board.updateGrid(that.player, that.playerInput);
+      //that.player.checkMove(that.playerInput);
+      //that.board.updateGrid(that.player, that.playerInput);
+
+      that.blueGhost.ghostMove();
+      that.board.updateGrid(that.blueGhost, that.blueGhost.aiDirection);
+
+      that.pinkGhost.ghostMove();
+      that.board.updateGrid(that.pinkGhost, that.pinkGhost.aiDirection);
+
+      that.takeDotGiveScore(that.player.row, that.player.column);
     }, 100)
   }
   getInput() {
@@ -232,6 +454,13 @@ class GameController {
           break;
        }
     })
+  }
+  takeDotGiveScore(row, column) {
+    if(this.board.grid[row][column].hasDot === true) {
+      this.score++;
+      this.board.grid[row][column].hasDot = false;
+      this.board.grid[row][column].elmnt.children().removeClass('dot');
+    }
   }
 }
 class MapCreator {
@@ -320,12 +549,11 @@ class MapBuilder {
   }
   removeDots() {
     for(let i = 0; i < this.dotCoords.rI.length; i++){
+      this.grid[this.dotCoords.rI[i]][this.dotCoords.cI[i]].hasDot = false;
       this.grid[this.dotCoords.rI[i]][this.dotCoords.cI[i]].elmnt.children().removeClass('dot');
     }
   }
 }
-
-
 var rowCoords = {
   rI: [1, 2, 1, 2, 1, 2, 1, 2, 0, 1, 2, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 4, 4, 4,
       5, 6, 7, 8, 4, 5, 7, 8, 6, 4, 6, 5, 8, 9, 8, 7, 6, 4, 5, 7, 8, 8, 5, 6, 6,
@@ -371,7 +599,6 @@ var colCoords = {
        10, 10, 7, 8, 8, 7, 6, 5, 5, 6, 12, 13, 14, 15, 12, 13, 14, 15
     ]
 }
-
 var dotCoords = {
   rI: [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 0, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2,
     1, 1, 1, 2, 2, 2, 4, 4, 4, 4, 5, 6, 7, 8, 6, 6, 6, 4, 4, 4, 4, 4, 4, 4, 5, 6,
@@ -394,14 +621,7 @@ var dotCoords = {
          12, 13, 14, 15, 12, 13, 13, 12, 17, 17, 17, 18, 19, 19, 19, 18, 17, 16,
           15, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10]
 }
-
-
-
 var game = new GameController();
-var mapB = new MapCreator(game.board.grid);
-
-
-var makeWalls = new MapBuilder(rowCoords, colCoords, dotCoords, game.board.grid);
 
 
 
