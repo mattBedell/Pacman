@@ -404,18 +404,20 @@ class GameController {
   constructor() {
     this.playerInput = 'right';
     this.board = new GameBoard(21, 21, '1px solid blue');
-    this.player = new Sprite('pacman', 20, 0, this.board.grid);
+    this.player = new Sprite('pacman', 15, 9, this.board.grid);
     this.blueGhost = new Sprite('ghostBlue', 11, 6, this.board.grid);
     this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid)
     this.redGhost = new Sprite('ghostRed', 11, 10, this.board.grid)
     this.score = 0;
     this.playerIntervalId;
     this.aiIntervalId;
+    this.dotTotal = 0;
     this.buildMap = new MapBuilder(rowCoords, colCoords, dotCoords, this.board.grid);
-    this.runMove();
+    this.runGame();
     this.getInput();
+    this.countTotalDots();
   }
-  runMove() {
+  runGame() {
     let that = this;
     this.playerIntervalId = setInterval(function() {
       that.player.checkMove(that.playerInput);
@@ -476,6 +478,16 @@ class GameController {
       this.score++;
       this.board.grid[row][column].hasDot = false;
       this.board.grid[row][column].elmnt.children().removeClass('dot');
+      $('.scoreNum').text('Score: ' + this.score * 100);
+    }
+  }
+  countTotalDots(){
+    for(let i = 0; i < this.board.grid.length; i++) {
+      for(let j = 0; j < this.board.grid[i].length; j++){
+        if(this.board.grid[i][j].hasDot == true) {
+          this.dotTotal++;
+        }
+      }
     }
   }
 }
