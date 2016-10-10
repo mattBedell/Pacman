@@ -436,6 +436,11 @@ class Sprite {
 
 class GameController {
   constructor() {
+    this.resetBtn = $('.resetButton');
+    let that = this;
+    this.resetBtn.on('click', function(){
+      that.resetGame();
+    })
     this.playerInput = 'right';
     this.board = new GameBoard(21, 21, '1px solid blue');
     this.player = new Sprite('pacman', 15, 9, this.board.grid);
@@ -452,6 +457,25 @@ class GameController {
     this.runGame();
     this.getInput();
     this.countTotalDots();
+  }
+  resetGame() {
+    $('.conditionContainer').css('visibility', 'hidden');
+    $('.scoreNum').text('Score: ');
+    this.score = 0;
+    this.lives = 3;
+    this.playerTeleport('start');
+    this.resetSprites();
+    this.resetDots();
+    this.runGame();
+  }
+  resetDots(){
+    for(let i = 0; i < this.board.grid.length; i++){
+       for(let j = 0; j < this.board.grid[i].length; j++){
+        this.board.grid[i][j].hasDot = true;
+        this.board.grid[i][j].elmnt.children().addClass('dot');
+       }
+    }
+    this.buildMap.removeDots();
   }
   runGame() {
     let that = this;
@@ -479,7 +503,6 @@ class GameController {
     }, 300)
   }
   checkDeath(){
-    if(this.lives > 0){
       if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
         this.playerDeath();
       }
@@ -492,10 +515,7 @@ class GameController {
       if (this.player.row === this.orangeGhost.row && this.player.column === this.orangeGhost.column) {
         this.playerDeath();
       }
-    } else {
-      console.log('You Lost!');
     }
-  }
   playerDeath () {
     this.lives -= 1;
     this.removeLifeIcon();
@@ -508,11 +528,20 @@ class GameController {
       that.board.updateGrid(that.player)
       counter += 100;
       if(counter > 1000) {
-        clearInterval(pauseInterval);
-        that.runGame();
-        that.playerTeleport('start');
+        if(that.lives < 0){
+          that.gameOver();
+          clearInterval(pauseInterval);
+        } else {
+          clearInterval(pauseInterval);
+          that.runGame();
+          that.playerTeleport('start');
+        }
       }
     }, 300)
+  }
+  gameOver () {
+    
+    $('.conditionContainer').css('visibility', 'visible');
   }
   resetSprites(){
 
