@@ -46,6 +46,7 @@ body{
   width: 100%;
 }
 .resetButton {
+  cursor: pointer;
   height: 30px;
   width: 100%;
   display: flex;
