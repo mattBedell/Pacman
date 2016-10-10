@@ -84,6 +84,17 @@ class GameBoard {
         break;
     }
   }
+  updateTeleport(mySprite, direction){
+    switch(direction){
+      case 'left':
+      this.grid[10][0].elmnt.css('background-image', '');
+      break;
+
+      case 'right':
+        this.grid[10][20].elmnt.css('background-image', '');
+        break;
+    }
+  }
 }
 class Sprite {
   constructor(spriteType, startingRow, startingColumn, gBoard) {
@@ -406,9 +417,11 @@ class GameController {
     this.board = new GameBoard(21, 21, '1px solid blue');
     this.player = new Sprite('pacman', 15, 9, this.board.grid);
     this.blueGhost = new Sprite('ghostBlue', 11, 6, this.board.grid);
-    this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid)
-    this.redGhost = new Sprite('ghostRed', 11, 10, this.board.grid)
+    this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid);
+    this.redGhost = new Sprite('ghostRed', 11, 10, this.board.grid);
+    this.orangeGhost = new Sprite('ghostOrange', 11, 10, this.board.grid)
     this.score = 0;
+    this.lives = 3;
     this.playerIntervalId;
     this.aiIntervalId;
     this.dotTotal = 0;
@@ -420,11 +433,13 @@ class GameController {
   runGame() {
     let that = this;
     this.playerIntervalId = setInterval(function() {
+      that.playerTeleport();
       that.player.checkMove(that.playerInput);
       that.board.updateGrid(that.player, that.playerInput);
 
       that.takeDotGiveScore(that.player.row, that.player.column);
       that.checkDeath();
+
     }, 150)
     this.aiIntervalId = setInterval(function() {
       that.blueGhost.ghostMove();
@@ -435,15 +450,54 @@ class GameController {
 
       that.redGhost.ghostMove();
       that.board.updateGrid(that.redGhost, that.redGhost.aiDirection);
+
+      that.orangeGhost.ghostMove();
+      that.board.updateGrid(that.orangeGhost, that.orangeGhost.aiDirection);
     }, 300)
   }
   checkDeath(){
     if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
+      this.lives -= 1;
+      this.removeLifeIcon();
+    }
+    if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
+      this.lives -= 1;
+      this.removeLifeIcon();
+    }
+    if (this.player.row === this.pinkGhost.row && this.player.column === this.pinkGhost.column) {
+      this.lives -= 1;
+      this.removeLifeIcon();
+    }
+    if (this.player.row === this.orangeGhost.row && this.player.column === this.orangeGhost.column) {
+      this.lives -= 1;
+      this.removeLifeIcon();
+    }
+  }
+  removeLifeIcon() {
+    switch(this.lives){
+      case 0:
+      $('.life1').removeClass('lives');
+      break;
 
-    } else if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
+      case 1:
+      $('.life2').removeClass('lives');
+      break;
 
-    } else if (this.player.row === this.pinkGhost.row && this.player.column === this.pinkGhost.column) {
-
+      case 2:
+      $('.life3').removeClass('lives');
+      break;
+    }
+  }
+  playerTeleport(){
+    if(this.player.row === 10 && this.player.column === 0 && this.playerInput === 'left') {
+      this.player.row = 10;
+      this.player.column = 20;
+      this.board.updateTeleport(this.player, this.playerInput);
+    }
+    if(this.player.row === 10 && this.player.column === 20 && this.playerInput === 'right') {
+      this.player.row = 10;
+      this.player.column = 0;
+      this.board.updateTeleport(this.player, this.playerInput);
     }
   }
   getInput() {
@@ -560,6 +614,8 @@ class MapBuilder {
     this.drawRows();
     this.drawColumns();
     this.removeDots();
+    this.grid[10][0].elmnt.css('border-left', '');
+    this.grid[10][20].elmnt.css('border-right', '');
   }
   drawRows() {
     for(let i = 0; i < this.rowCoords.rI.length; i++){
@@ -637,7 +693,7 @@ var dotCoords = {
        15, 14, 14, 14, 14, 15, 15, 15, 14, 14, 13, 13, 13, 14, 16, 16, 17, 16, 15,
         17, 17, 17, 17, 18, 19, 19, 18, 19, 19, 19, 19, 19, 18, 19, 20, 17, 16, 17,
         17, 17, 17, 18, 18, 19, 19, 15, 16, 17, 16, 16, 18, 19, 19, 19, 19, 19, 11,
-         11, 11, 11, 11, 11, 11, 11, 11, 11, 10],
+         11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10],
   cI: [1, 2, 3, 3, 2, 1, 5, 6, 7, 8, 8, 7, 6, 5, 10, 10, 10, 12, 13, 14, 15, 15,
     14, 13, 12, 17, 18, 19, 19, 18, 17, 17, 18, 19, 15, 15, 15, 15, 15, 14, 13,
     12, 13, 12, 11, 10, 9, 8, 7, 10, 10, 8, 7, 6, 5, 5, 5, 5, 5, 3, 2, 1, 0, 1,
@@ -647,7 +703,7 @@ var dotCoords = {
        17, 18, 19, 19, 15, 15, 14, 14, 12, 12, 11, 10, 9, 8, 8, 6, 5, 5, 6, 3, 2, 1,
         1, 1, 2, 3, 3, 3, 5, 6, 7, 8, 8, 8, 7, 7, 5, 4, 3, 2, 1, 1, 10, 10, 10, 10,
          12, 13, 14, 15, 12, 13, 13, 12, 17, 17, 17, 18, 19, 19, 19, 18, 17, 16,
-          15, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10]
+          15, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10, 0, 20]
 }
 var game = new GameController();
 
