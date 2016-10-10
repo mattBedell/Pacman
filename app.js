@@ -104,7 +104,7 @@ class GameBoard {
       case 'start':
         for(let i = 0; i < this.grid.length; i ++) {
           for(let j = 0; j < this.grid[i].length; j ++) {
-            if(this.grid[i][j].hasPac === true) {
+            if(this.grid[i][j].hasPac === true && i != mySprite.row && j != mySprite.column) {
               this.grid[i][j].elmnt.css('background-image', '');
           }
         }
@@ -462,11 +462,13 @@ class GameController {
     $('.conditionContainer').css('visibility', 'hidden');
     $('.scoreNum').text('Score: ');
     this.score = 0;
-    this.lives = 3;
+
     this.playerTeleport('start');
     this.resetSprites();
     this.resetDots();
+    this.resetLives();
     this.runGame();
+
   }
   resetDots(){
     for(let i = 0; i < this.board.grid.length; i++){
@@ -477,9 +479,21 @@ class GameController {
     }
     this.buildMap.removeDots();
   }
+  resetLives(){
+    this.lives = 3;
+    let counter = 1;
+    for(let i = 0; i < this.lives; i++){
+      $('.life' + counter).addClass('lives')
+      counter++;
+    }
+  }
   runGame() {
     let that = this;
     this.playerIntervalId = setInterval(function() {
+      if(that.score === that.dotTotal) {
+        that.pauseGame();
+        that.gameWin();
+      }
       that.playerTeleport(that.playerInput);
       that.player.checkMove(that.playerInput);
       that.board.updateGrid(that.player, that.playerInput);
@@ -525,7 +539,7 @@ class GameController {
     this.pauseGame();
     let pauseInterval = setInterval(function(){
       that.player.flashPlayer();
-      that.board.updateGrid(that.player)
+      that.board.updateGrid(that.player);
       counter += 100;
       if(counter > 1000) {
         if(that.lives < 0){
@@ -540,7 +554,15 @@ class GameController {
     }, 300)
   }
   gameOver () {
-    
+    $('.gameConditionText').text('You are out of lives!')
+    $('.playerName').text('Try Again Player 1!')
+    $('.playerScore').text('Score: ' + this.score * 100);
+    $('.conditionContainer').css('visibility', 'visible');
+  }
+  gameWin () {
+    $('.gameConditionText').text('You Win!')
+    $('.playerName').text('Well Done Player 1!')
+    $('.playerScore').text('Score: ' + this.score * 100);
     $('.conditionContainer').css('visibility', 'visible');
   }
   resetSprites(){
@@ -601,6 +623,7 @@ class GameController {
       case 'start':
       this.player.row = 15;
       this.player.column = 9;
+      this.playerInput = 'right';
       this.board.updateTeleport(this.player, direction);
   }
   }

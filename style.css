@@ -16,7 +16,7 @@ body{
   visibility: hidden;
 }
 .conditionAlert {
-  width: 300px;
+  width: 400px;
   background-color: black;
   border: 3px double blue;
   color: white;
@@ -24,6 +24,7 @@ body{
   flex-wrap: wrap;
 }
 .conditionBar {
+  color: rgba(255, 255, 255, .6);
   width: 100%;
   height: 25px;
   display: flex;
@@ -32,7 +33,16 @@ body{
   align-items: center;
 }
 .conditionBody {
+  color: rgba(255, 255, 255, .6);
   height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.playerName {
+  text-align: center;
   width: 100%;
 }
 .resetButton {
@@ -42,7 +52,7 @@ body{
   justify-content: center;
   align-items: center;
   border-top: 1px solid blue;
-  color: rgba(255, 255, 255, .7);
+  color: white;
 }
 .gameBoard {
   display:flex;
