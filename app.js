@@ -1,107 +1,144 @@
 class GridProperties {
   constructor(gridRow, gridColumn, totalId) {
     this.canMove = {
+      //Allowable moves the sprite can make, these are changed when the map is drawn, if there are walls nearby
       dUp: true,
       dDown: true,
       dLeft: true,
       dRight: true
     }
+    //Element corresponding to this objects place in the grid array
     this.elmnt;
+    //This objects row and column
     this.row = gridRow;
     this.col = gridColumn;
+    //This objects unique grid peice number
     this.gridId = totalId;
+
+    //Whether there is dot occupying this gri space for pacman to eat
     this.hasDot = true;
+
+    //Whether pacman is occupying the grid space
     this.hasPac = false;
+    //Creates grid blocks corresponding to this object
     this.addElmnts();
   }
   addElmnts() {
+    //Creating strings to append as classes to an html element corresponding to this objects row and column
     let appendToThisRowElmntClass = '.r' + this.row;
     let defaultGridClass = 'gridBlock';
     let gridIdNumClass = 'gb' + this.gridId;
     let newElmntClasses = defaultGridClass + ' ' + gridIdNumClass;
     let gridElmntToAppend = '<div class="' + newElmntClasses + '"></div>';
+    //Appending grid element to its proper row
     $(appendToThisRowElmntClass).append(gridElmntToAppend);
 
     let setJqueryElmntPointerClass = '.' + gridIdNumClass;
+    //Setting this objects associated element for easy lookup of elements on the page
     this.elmnt = $(setJqueryElmntPointerClass);
+    //Gives all grid elements a dot for pacman to eat
     this.addDot();
   }
   addDot() {
+    //Gives grid element a dot for pacman to eat
     this.hadDot = true;
+
     let dotClasses = 'dot ' + 'dotID' + this.gridId;
     let dotElmnt = '<div class="' + dotClasses + '"></div>';
+    //Appends dot element to grid peice
     $(this.elmnt).append(dotElmnt);
   }
 }
 class GameBoard {
   constructor(numRows, numColumns, borderStyle) {
+    //Array to hold objects in a row/column format
     this.grid = [];
+    //Total grid objects created for Id puprposes
     let idCounter = 0;
+    //Creates row arrays inside the grid array, as well as row elements on the page
     for(let i = 0; i < numRows; i++) {
+      //Setting up strings to append as classes to the row elements
       let rowDefaultClass = 'row';
       let rowIdClass = 'r' + i;
       let newRowClasses = rowDefaultClass + ' ' + rowIdClass;
       let rowElmntToAppend = '<div class="' + newRowClasses + '"></div>';
+      //Append numbered row to the game board element
       $('.gameBoard').append(rowElmntToAppend);
+      //Adds a row array to the grid array, to store grid objects in each row
       this.grid[i] = [];
 
       for(let j = 0; j < numColumns; j++) {
+        //Creates new grid objects in each row
         this.grid[i][j] = new GridProperties(i, j, idCounter);
         idCounter++;
       }
     }
+    //Draws outer borders of the game board
     this.drawBorders(borderStyle);
   }
   drawBorders(borderProp) {
+    //Draws top border and sets the grid properties of top row, movement up to false
     for(let i = 0; i < this.grid[0].length; i++) {
       this.grid[0][i].elmnt.css('border-top', borderProp);//Top Border
       this.grid[0][i].canMove.dUp = false;
-
+      //Draws bottom border and sets the grid properties of bottom row, movement down to false
       this.grid[this.grid.length - 1][i].elmnt.css('border-bottom', borderProp);//Bottom Border
       this.grid[this.grid.length - 1][i].canMove.dDown = false;
     }
+    //Draws left border and sets the grid properties of left row, movement left to false
     for(let i = 0; i < this.grid.length; i++) {
       this.grid[i][0].elmnt.css('border-left', borderProp);//Left Border
       this.grid[i][0].canMove.dLeft = false;
-
+      //Draws right border and sets the grid properties of right row, movement right to false
       this.grid[i][this.grid[0].length - 1].elmnt.css('border-right', borderProp);//Right Border
       this.grid[i][this.grid[0].length - 1].canMove.dRight = false;
     }
   }
+  //Sets the background images of the grid peices to simulate movement, takes sprite position and direction as arguments
   updateGrid(mySprite, direction) {
+    //Sets grid background to the sprites current image
     this.grid[mySprite.row][mySprite.column].elmnt.css('background-image', mySprite.assets.current);
     this.grid[mySprite.row][mySprite.column].hasPac = true;
     switch(direction) {
       case 'right':
+        //If the sprite is moving right, removes the image from the sprites previous postition
         this.grid[mySprite.row ][mySprite.column - 1].elmnt.css('background-image', '');
         this.grid[mySprite.row ][mySprite.column - 1].hasPac = false;
         break;
       case 'left':
+        //If the sprite is moving left, removes the image from the sprites previous postition
         this.grid[mySprite.row][mySprite.column + 1].elmnt.css('background-image', '');
         this.grid[mySprite.row ][mySprite.column + 1].hasPac = false;
         break;
       case 'up':
+        //If the sprite is moveing up, removes the image from the sprites previous postition
         this.grid[mySprite.row + 1][mySprite.column ].elmnt.css('background-image', '');
           this.grid[mySprite.row + 1][mySprite.column].hasPac = false;
         break;
       case 'down':
+        //If the sprite is moveing down, removes the image from the sprites previous postition
         this.grid[mySprite.row - 1][mySprite.column ].elmnt.css('background-image', '');
           this.grid[mySprite.row - 1][mySprite.column].hasPac = false;
         break;
       case 'reset':
+        //Clears the sprites current position of image, for when sprite is teleported somwhere else
         this.grid[mySprite.row][mySprite.column].elmnt.css('background-image', '');
     }
   }
+  //Updates the sprites correct position image when the sprite telports from one side of the map to the other
   updateTeleport(mySprite, direction){
     switch(direction){
       case 'left':
+      //Clears the image when sprite teleports from left to right
       this.grid[10][0].elmnt.css('background-image', '');
       break;
 
       case 'right':
+      //Clears image when sprite teleports for right to left
         this.grid[10][20].elmnt.css('background-image', '');
         break;
       case 'start':
+      //Clears sprites image  from all grid peices
         for(let i = 0; i < this.grid.length; i ++) {
           for(let j = 0; j < this.grid[i].length; j ++) {
             if(this.grid[i][j].hasPac === true && i != mySprite.row && j != mySprite.column) {
@@ -114,18 +151,24 @@ class GameBoard {
 }
 class Sprite {
   constructor(spriteType, startingRow, startingColumn, gBoard) {
+    //If player character or which color ghost is being created
     this.spriteType = spriteType;
+    //Initial movement direction for AI
     this.aiDirection = 'right';
+    //Intial postion of sprite when created
     this.row = startingRow;
     this.column = startingColumn;
+    //Grid, so the sprite can read the grid properties and determine if movement is allowed
     this.readGrid = gBoard;
     this.assets = {
+      //Animation counter and current image, cycles through a list of image to simulate movement and animation
       counter: 0,
       current: undefined,
       list: undefined,
     }
     switch(this.spriteType) {
       case 'pacman':
+      //List of sprite images to use if a player character is made
         this.assets.list = {
           aRight: ['url(assets/pacStart.png)', 'url(assets/pacRight2.png)', 'url(assets/pacRight3.png)'],
           aLeft: ['url(assets/pacStart.png)', 'url(assets/pacLeft2.png)', 'url(assets/pacLeft3.png)'],
@@ -133,6 +176,7 @@ class Sprite {
           aDown: ['url(assets/pacStart.png)', 'url(assets/pacDown2.png)', 'url(assets/pacDown3.png)']
         }
         break;
+        //Images to use for ghosts, depending on the color
       case 'ghostRed':
         this.assets.list = 'url(assets/ghostRed.png)';
         break;
@@ -148,7 +192,9 @@ class Sprite {
     }
   }
   ghostMove() {
+    //Ghost AI movement, checks if movement is allowed by reading grid properties, then rolls a random number to determine which way to go
      switch(this.aiDirection) {
+       //This is pretty self explanatory, checks if the move is allowed, rolls a random number and moves in the direction asscociated with that number
        case 'right'://RIGHT MASTER
          if (this.readGrid[this.row][this.column].canMove.dRight === true || this.readGrid[this.row][this.column].canMove.dUp === true || this.readGrid[this.row][this.column].canMove.dDown === true) {
            let randomDirection = Math.floor(Math.random() * 3);
@@ -351,6 +397,7 @@ class Sprite {
      }
   }
   checkMove(direction) {
+    //Checks if the player character can move in the direction inputed by user, then cycles the bacground image for that movement direction, to be passed to the grid for background image change
     switch(direction) {
       case 'right':
         if (this.readGrid[this.row][this.column].canMove.dRight === true) {
@@ -379,6 +426,7 @@ class Sprite {
     }
   }
   updateAsset(direction) {
+    //Cycles through a list of movement images for the character, then is red by the grid to put it on the board
     switch(direction){
       case 'right':
         if(this.assets.counter < this.assets.list.aRight.length) {
@@ -425,6 +473,7 @@ class Sprite {
     }
   }
   flashPlayer () {
+    //toggles the characters current image off and on when run, to flash when death
     if(this.assets.current != '') {
       this.assets.current = '';
     } else {
@@ -435,32 +484,48 @@ class Sprite {
 
 
 class GameController {
+  //Controls interaction between game objects, checks win/lose conditions
   constructor() {
+    //Adds listener to the reset button to reset game
     this.resetBtn = $('.resetButton');
     let that = this;
     this.resetBtn.on('click', function(){
+      //resets player, AI positions, score, dots on board
       that.resetGame();
     })
-
+    //Which direction the player wants to move
     this.playerInput = 'right';
+    //Creates new gameboard objects and constructs grid
     this.board = new GameBoard(21, 21, '1px solid blue');
+    //New player sprite
     this.player = new Sprite('pacman', 15, 9, this.board.grid);
+    //New AI sprites
     this.blueGhost = new Sprite('ghostBlue', 11, 6, this.board.grid);
     this.pinkGhost = new Sprite('ghostPink', 11, 14, this.board.grid);
     this.redGhost = new Sprite('ghostRed', 11, 10, this.board.grid);
     this.orangeGhost = new Sprite('ghostOrange', 11, 10, this.board.grid)
+    //Sets score and lives
     this.score = 0;
     this.lives = 3;
+    //Interval for player movement, so can be cleared on game pause
     this.playerIntervalId;
+    //Interval for computer movement, can be cleared on game pause
     this.aiIntervalId;
+    //Total number of dots, compared against dots eaten for win condition
     this.dotTotal = 0;
+    //New mapbuilder object ot create walls on grid, fed grid coordinates to draw walls
     this.buildMap = new MapBuilder(rowCoords, colCoords, dotCoords, this.board.grid);
+    //Starts the game
     this.runGame();
+    //Sets key listeners and player direction input
     this.getInput();
+    //Checks if all the dots are eaten
     this.countTotalDots();
+    //Gets player name from url
     this.grabPlayerName();
   }
   grabPlayerName(){
+    //gets player name from url and displays it on the board
     let nameGrab = window.location.href;
     nameGrab = nameGrab.split('=');
     nameGrab = nameGrab[1].split('+');
@@ -471,10 +536,12 @@ class GameController {
     $('.displayPlayerName').text(this.playerName);
   }
   resetGame() {
+    //Resets game on win/lose condition
+    //Popup for reset game button
     $('.conditionContainer').css('visibility', 'hidden');
     $('.scoreNum').text('Score: ');
     this.score = 0;
-
+    //sends player to start and resets dots, sprites, lives, and starts a new game
     this.playerTeleport('start');
     this.resetSprites();
     this.resetDots();
@@ -483,15 +550,18 @@ class GameController {
 
   }
   resetDots(){
+    //Gives dots to every grid piece on reset
     for(let i = 0; i < this.board.grid.length; i++){
        for(let j = 0; j < this.board.grid[i].length; j++){
         this.board.grid[i][j].hasDot = true;
         this.board.grid[i][j].elmnt.children().addClass('dot');
        }
     }
+    //Removes dots inside walls, based of array of coordinates fed to the function
     this.buildMap.removeDots();
   }
   resetLives(){
+    //Gues what this does, resets lives
     this.lives = 3;
     let counter = 1;
     for(let i = 0; i < this.lives; i++){
@@ -500,21 +570,27 @@ class GameController {
     }
   }
   runGame() {
+    //Sets intervals for player and ghost movement, checks for wins and collisions
     let that = this;
     this.playerIntervalId = setInterval(function() {
       if(that.score === that.dotTotal) {
+        //Is it neccesary to comment when the functions say what they do?
         that.pauseGame();
         that.gameWin();
       }
       that.playerTeleport(that.playerInput);
+      //Checks if player movement is allowed in that direction
       that.player.checkMove(that.playerInput);
+      //Tells the grid to update the image of the player to simulate movement
       that.board.updateGrid(that.player, that.playerInput);
-
+      //Removes dots when player moves over them and adds to the score
       that.takeDotGiveScore(that.player.row, that.player.column);
+      //Checks if player and ghost occupy the same space;
       that.checkDeath();
 
     }, 150)
     this.aiIntervalId = setInterval(function() {
+      //Moves ghosts and tells the grid to animate them
       that.blueGhost.ghostMove();
       that.board.updateGrid(that.blueGhost, that.blueGhost.aiDirection);
 
@@ -529,7 +605,9 @@ class GameController {
     }, 150)
   }
   checkDeath(){
+    //Checks if player and ghost occupy the same space
       if(this.player.row === this.redGhost.row && this.player.column === this.redGhost.column) {
+        //Runs the death function, removes life and resets player to start
         this.playerDeath();
       }
       if (this.player.row === this.blueGhost.row && this.player.column === this.blueGhost.column) {
@@ -544,11 +622,13 @@ class GameController {
     }
   playerDeath () {
     this.lives -= 1;
+    //Removes live and restes player to start
     this.removeLifeIcon();
     this.resetSprites();
     let that = this;
     let counter = 0;
     this.pauseGame();
+    //Pauses game and flashes the player for short period, then resets player to start
     let pauseInterval = setInterval(function(){
       that.player.flashPlayer();
       that.board.updateGrid(that.player);
@@ -559,6 +639,8 @@ class GameController {
           clearInterval(pauseInterval);
         } else {
           clearInterval(pauseInterval);
+
+          //Resumes game after player blinks enough
           that.runGame();
           that.playerTeleport('start');
         }
@@ -566,19 +648,21 @@ class GameController {
     }, 300)
   }
   gameOver () {
+    //Displays popup with score, playername and reset button
     $('.gameConditionText').text('You are out of lives!')
     $('.playerName').text('Try Again ' + this.playerName + '!')
     $('.playerScore').text('Score: ' + this.score * 100);
     $('.conditionContainer').css('visibility', 'visible');
   }
   gameWin () {
+    //Displays popup with score, playername and reset button
     $('.gameConditionText').text('You Win!')
     $('.playerName').text('Well Done ' + this.playerName + '!')
     $('.playerScore').text('Score: ' + this.score * 100);
     $('.conditionContainer').css('visibility', 'visible');
   }
   resetSprites(){
-
+    //Resets the ghosts to the starting position
     this.board.updateGrid(this.pinkGhost, 'reset');
     this.pinkGhost.row = 11;
     this.pinkGhost.column = 14;
@@ -601,6 +685,7 @@ class GameController {
 
   }
   removeLifeIcon() {
+    //Removes life icon from top of the screen
     switch(this.lives){
       case 0:
       $('.life1').removeClass('lives');
@@ -617,6 +702,7 @@ class GameController {
   }
   playerTeleport(direction) {
     switch(direction) {
+      //If player moves in off the board from the right move him to the left and vice versa
       case 'left':
         if(this.player.row === 10 && this.player.column === 0) {
           this.player.row = 10;
@@ -631,7 +717,7 @@ class GameController {
           this.board.updateTeleport(this.player, this.playerInput);
         }
       break;
-
+      //Moves player to the scarting position
       case 'start':
       this.player.row = 15;
       this.player.column = 9;
@@ -640,6 +726,7 @@ class GameController {
   }
   }
   getInput() {
+    //Gets input based on keycodes inputted and tranlates that to a direction
     let that = this;
     $('body').on('keydown', function(e){
        switch(e.keyCode){
@@ -667,6 +754,7 @@ class GameController {
     })
   }
   takeDotGiveScore(row, column) {
+    //Removes dot class from inner element so the dot dissapears, adds to score
     if(this.board.grid[row][column].hasDot === true) {
       this.score++;
       this.board.grid[row][column].hasDot = false;
@@ -683,12 +771,15 @@ class GameController {
       }
     }
   }
+  //Clear the movement intervals, all sprites stop moving
   pauseGame() {
     clearInterval(this.playerIntervalId);
     clearInterval(this.aiIntervalId)
   }
 }
 class MapCreator {
+  //This is for dev purposes only. I got tired of manually inputing coordinates to draw the game walls
+  //Clicked grid pieces push their coordinates to an array that can be fed to the mapbuilder object which draws the walls
   constructor(boardGrid) {
     this.grid = boardGrid;
     this.gridCoords = {
@@ -749,6 +840,7 @@ class MapCreator {
   }
 }
 class MapBuilder {
+  //Takes an array/object of coordinates and draws borders for walls, sets the gird properites to inhibit movement through walls
   constructor(rowCoords, colCoords, dotCoord, gameGrid) {
     this.rowCoords = rowCoords;
     this.colCoords = colCoords;
@@ -761,6 +853,7 @@ class MapBuilder {
     this.grid[10][20].elmnt.css('border-right', '');
   }
   drawRows() {
+    //Draws vertical walls
     for(let i = 0; i < this.rowCoords.rI.length; i++){
       this.grid[this.rowCoords.rI[i]][this.rowCoords.cI[i]].elmnt.css('border-right', '1px solid blue');
       this.grid[this.rowCoords.rI[i]][this.rowCoords.cI[i]].canMove.dRight = false;
@@ -768,6 +861,7 @@ class MapBuilder {
     }
   }
   drawColumns() {
+    //Draws horizontal walls
     for(let i = 0; i < this.colCoords.rI.length; i++){
       this.grid[this.colCoords.rI[i]][this.colCoords.cI[i]].elmnt.css('border-bottom', '1px solid blue');
       this.grid[this.colCoords.rI[i]][this.colCoords.cI[i]].canMove.dDown = false;
@@ -775,12 +869,14 @@ class MapBuilder {
     }
   }
   removeDots() {
+    //Removes dots inside the walls
     for(let i = 0; i < this.dotCoords.rI.length; i++){
       this.grid[this.dotCoords.rI[i]][this.dotCoords.cI[i]].hasDot = false;
       this.grid[this.dotCoords.rI[i]][this.dotCoords.cI[i]].elmnt.children().removeClass('dot');
     }
   }
 }
+//Coordinates for the mapbuilder object to draw from
 var rowCoords = {
   rI: [1, 2, 1, 2, 1, 2, 1, 2, 0, 1, 2, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 4, 4, 4,
       5, 6, 7, 8, 4, 5, 7, 8, 6, 4, 6, 5, 8, 9, 8, 7, 6, 4, 5, 7, 8, 8, 5, 6, 6,
@@ -799,6 +895,7 @@ var rowCoords = {
          11, 13, 13, 15, 9, 9, 10, 10
      ]
 }
+//Coordinates for the mapbuilder object to draw from
 var colCoords = {
   rI: [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0,
       2, 2, 2, 3, 3, 3, 4, 4, 4, 3, 5, 5, 5, 6, 6, 6, 3, 3, 3, 4, 4, 4, 6, 5, 5,
@@ -826,6 +923,7 @@ var colCoords = {
        10, 10, 7, 8, 8, 7, 6, 5, 5, 6, 12, 13, 14, 15, 12, 13, 14, 15
     ]
 }
+//Coordinates for the mapbuilder object to draw from
 var dotCoords = {
   rI: [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 0, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2,
     1, 1, 1, 2, 2, 2, 4, 4, 4, 4, 5, 6, 7, 8, 6, 6, 6, 4, 4, 4, 4, 4, 4, 4, 5, 6,
@@ -848,6 +946,8 @@ var dotCoords = {
          12, 13, 14, 15, 12, 13, 13, 12, 17, 17, 17, 18, 19, 19, 19, 18, 17, 16,
           15, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10, 0, 20]
 }
+
+//Let there be pacman
 var game = new GameController();
 
 
