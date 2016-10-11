@@ -284,3 +284,190 @@ form {
   width: 20%;
   height: 20%;
 }
+
+@media (max-width: 500px){
+  .conditionContainer {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    visibility: hidden;
+  }
+  .conditionAlert {
+    width: 200px;
+    background-color: black;
+    border: 3px double blue;
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: .5em;
+  }
+  .row {
+    box-sizing: border-box;
+    display: flex;
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+  .gridBlock {
+    box-sizing: border-box;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: 100% 100%;
+  }
+  .scoreDisplay {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    justify-content: left;
+    height: 10px;
+    font-size: .5em;
+  }
+  .lives {
+    height: 10px;
+    width: 10px;
+    background-image: url(assets/pacRight3.png);
+    background-size: 100% 100%;
+  }
+  .nameDisplay {
+    visibility: hidden;
+  }
+  .headerBar {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    align-items: center;
+  }
+  .pacmanLogo {
+    padding-right: 50px;
+    width: 150px;
+    height: 75px;
+    background-image: url(assets/pacmanLogo.png);
+    background-size: 110% 100%;
+  }
+  .instructText {
+    height: 10px;
+    font-size: 5px;
+  }
+  .instruct {
+    height: 20px;
+    width: 100%;
+    color: white;
+    font-size: .6em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .loginCard{
+    width: 260px;
+    height: 200px;
+    background-color: rgb(247,247,247);
+    /*Boxshadow generated from http://www.cssmatic.com/box-shadow*/
+    -webkit-box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+    -moz-box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+    box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+  }
+  .nameInput {
+    width: 100px;
+    height: 25px;
+    border-top: 1px solid rgb(192,192,192);
+    border-right: 1px solid rgb(217,217,217);
+    border-bottom: 1px solid rgb(217,217,217);
+    border-left: 1px solid rgb(217,217,217);
+    font-size: 6px;
+    font-family: 'Press Start 2P', cursive;
+    padding-left: 4px;
+    margin-left: 20px;
+
+  }
+  .submitBtn {
+    margin: 8px;
+    width: 100px;
+    height: 25px;
+    background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+    border: 1px solid #3079ed;
+    border-radius: 3px;
+    text-shadow: 0 1px rgba(0,0,0,0.1);
+    color: white;
+    font-size: .3em;
+    text-decoration-style: solid;
+    font-family: 'Press Start 2P', cursive;
+  }
+  .formContainer {
+    width: 360px;
+    height: 175px;
+  }
+  .avatarContainer {
+    width: 100%;
+    height: 225px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .avatarImg {
+    width: 96px;
+    height: 96px;
+    background-image: url(assets/ghostPink.png);
+    background-size: 100% 100%;
+  }
+  form {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .avatarContainer {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .avatarImg {
+    width: 56px;
+    height: 56px;
+    background-image: url(assets/ghostPink.png);
+    background-size: 100% 100%;
+  }
+  .footerContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 40px;
+    width: 100%;
+  }
+}
+@media (max-width: 620px) {
+  .sloganText {
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .5em;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**/
