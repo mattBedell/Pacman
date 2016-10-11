@@ -166,43 +166,12 @@ form {
   font-size: .5em;
   padding-bottom: 6px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .displayPlayerName {
   color: white;
   height: 100%;
   font-size: .95em;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: flex-end;
   padding-top: 5px;
 }
