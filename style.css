@@ -5,6 +5,207 @@ body{
   background-color: black;/*rgba(0, 0, 0, 0.7);*/
   font-family: 'Press Start 2P', cursive;
 }
+.container {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-flow: column;
+  align-items: flex-start;
+}
+.headerBar {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pacmanLogo {
+  padding-right: 50px;
+  width: 175px;
+  height: 100px;
+  background-image: url(assets/pacmanLogo.png);
+  background-size: 110% 100%;
+}
+.slogan {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  color: white;
+}
+.sloganText {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3em;
+}
+.bodyBar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.instruct {
+  height: 40px;
+  width: 100%;
+  color: white;
+  font-size: .6em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.instructText {
+  height: 20px;
+}
+.loginCard{
+  width: 360px;
+  height: 360px;
+  background-color: rgb(247,247,247);
+  /*Boxshadow generated from http://www.cssmatic.com/box-shadow*/
+  -webkit-box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+  -moz-box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+  box-shadow: 2px 3px 5px -1px rgba(0,0,0,0.32);
+}
+.avatarContainer {
+  width: 100%;
+  height: 225px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.avatarImg {
+  width: 96px;
+  height: 96px;
+  background-image: url(assets/ghostPink.png);
+  background-size: 100% 100%;
+}
+.formContainer {
+  width: 360px;
+  height: 175px;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.nameInput {
+  width: 255px;
+  height: 35px;
+  border-top: 1px solid rgb(192,192,192);
+  border-right: 1px solid rgb(217,217,217);
+  border-bottom: 1px solid rgb(217,217,217);
+  border-left: 1px solid rgb(217,217,217);
+  font-size: .5em;
+  font-family: 'Press Start 2P', cursive;
+  padding-left: 4px;
+
+}
+.submitBtn {
+  margin: 8px;
+  width: 262px;
+  height: 35px;
+  background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+  border: 1px solid #3079ed;
+  border-radius: 3px;
+  text-shadow: 0 1px rgba(0,0,0,0.1);
+  color: white;
+  font-size: .75em;
+  text-decoration-style: solid;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.logoStripContainer {
+  width: 230px;
+  height: 17px;
+  display: flex;
+  justify-content: space-around
+
+}
+.logo {
+  height: 17px;
+  width: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logoDot {
+  border: 3px solid white;
+  border-radius: 100%;
+}
+.logo5{
+  background-image: url(assets/pacLeft3.png);
+  background-size: 100% 100%;
+}
+.logo6 {
+  background-image: url(assets/ghostBlue.png);
+  background-size: 100% 100%;
+}
+.logo7 {
+  background-image: url(assets/ghostRed.png);
+  background-size: 100% 100%;
+}
+.logo8 {
+  background-image: url(assets/ghostPink.png);
+  background-size: 100% 100%;
+}
+.footerContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 80px;
+  width: 100%;
+}
+.footerTextContainer {
+  color: white;
+  font-size: .5em;
+  padding-bottom: 6px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.displayPlayerName {
+  color: white;
+  height: 100%;
+  font-size: .95em;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-top: 5px;
+}
 .conditionContainer {
   height: 100%;
   width: 100%;
