@@ -441,6 +441,7 @@ class GameController {
     this.resetBtn.on('click', function(){
       that.resetGame();
     })
+
     this.playerInput = 'right';
     this.board = new GameBoard(21, 21, '1px solid blue');
     this.player = new Sprite('pacman', 15, 9, this.board.grid);
@@ -457,6 +458,17 @@ class GameController {
     this.runGame();
     this.getInput();
     this.countTotalDots();
+    this.grabPlayerName();
+  }
+  grabPlayerName(){
+    let nameGrab = window.location.href;
+    nameGrab = nameGrab.split('=');
+    nameGrab = nameGrab[1].split('+');
+    if(nameGrab.length > 1) {
+      nameGrab = nameGrab[0] + ' ' + nameGrab[1];
+    }
+    this.playerName = nameGrab;
+    $('.displayPlayerName').text(this.playerName);
   }
   resetGame() {
     $('.conditionContainer').css('visibility', 'hidden');
@@ -555,13 +567,13 @@ class GameController {
   }
   gameOver () {
     $('.gameConditionText').text('You are out of lives!')
-    $('.playerName').text('Try Again Player 1!')
+    $('.playerName').text('Try Again ' + this.playerName + '!')
     $('.playerScore').text('Score: ' + this.score * 100);
     $('.conditionContainer').css('visibility', 'visible');
   }
   gameWin () {
     $('.gameConditionText').text('You Win!')
-    $('.playerName').text('Well Done Player 1!')
+    $('.playerName').text('Well Done ' + this.playerName + '!')
     $('.playerScore').text('Score: ' + this.score * 100);
     $('.conditionContainer').css('visibility', 'visible');
   }
