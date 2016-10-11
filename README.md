@@ -3,6 +3,8 @@ Web Developement Immersive Project 1.
 
 An attempt at cloning the retro arcade game Pacman. Use the arrow keys to move pacman, and avoid the ghosts! Eat all the dots to win!
 
+
+Play here: https://mattbedell.github.io/Pacman/
 ###### Technologies used:
 * Javascript
 * HTML/CSS
